@@ -1,0 +1,522 @@
+{% extends "utils/base.html" %}
+
+{% block title %}Host Dashboard — HostStay{% endblock %}
+
+{% block nav %}
+{% include "utils/nav.html" with variant="public" %}
+{% endblock %}
+
+{% block extra_head %}
+
+<style>
+    .dashboard-wrapper {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 120px 32px 40px;
+        min-height: 100vh;
+    }
+
+    .dashboard-content {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .hero-card {
+        padding: 32px;
+    }
+
+    .hero-title {
+        font-size: 32px;
+        font-weight: 800;
+        color: #1a1c1c;
+        letter-spacing: -0.02em;
+        margin-bottom: 8px;
+    }
+
+    .hero-subtitle {
+        font-size: 15px;
+        color: #5f5e5e;
+        margin-bottom: 24px;
+    }
+
+    .hero-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .quick-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 20px;
+    }
+
+    .quick-card {
+        padding: 24px;
+    }
+
+    .quick-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 12px;
+        background: rgba(186, 0, 54, 0.08);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ba0036;
+        margin-bottom: 16px;
+    }
+
+    .quick-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: #1a1c1c;
+        margin-bottom: 8px;
+    }
+
+    .quick-desc {
+        font-size: 14px;
+        color: #5f5e5e;
+        line-height: 1.5;
+    }
+
+    .section-card {
+        padding: 24px;
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .section-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #1a1c1c;
+    }
+
+    .empty-state {
+        border: 1px dashed #d8d8d8;
+        border-radius: 12px;
+        padding: 48px 24px;
+        text-align: center;
+    }
+
+    .empty-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: #1a1c1c;
+        margin-bottom: 8px;
+    }
+
+    .empty-subtitle {
+        font-size: 14px;
+        color: #5f5e5e;
+    }
+
+    .future-box {
+        min-height: 220px;
+        border: 1px dashed #d8d8d8;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: #5f5e5e;
+        font-size: 14px;
+    }
+
+    @media(max-width:768px) {
+
+        .dashboard-wrapper {
+            padding: 100px 16px 24px;
+        }
+
+        .hero-title {
+            font-size: 26px;
+        }
+
+        .quick-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .section-subtitle {
+        font-size: 13px;
+        color: #5f5e5e;
+        margin-top: 4px;
+    }
+
+    .stay-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+    }
+
+    .stay-card {
+        overflow: hidden;
+        cursor: pointer;
+        transition: all .2s ease;
+    }
+
+    .stay-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, .08);
+    }
+
+    .stay-image {
+        height: 180px;
+        background: #f3f3f3;
+    }
+
+    .stay-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .stay-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ba0036;
+    }
+
+    .stay-placeholder span {
+        font-size: 48px;
+    }
+
+    .stay-content {
+        padding: 18px;
+    }
+
+    .stay-title {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .stay-location {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        color: #5f5e5e;
+        font-size: 14px;
+        margin-bottom: 16px;
+    }
+
+    .stay-meta {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .meta-pill {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: #f3f3f3;
+        font-size: 13px;
+        font-weight: 600;
+    }
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-wrapper">
+
+    
+    <div class="dashboard-content">
+
+        <!-- Dashboard Header -->
+
+        <div class="hs-card hero-card">
+
+            <!-- REMOVE THE ENTIRE QUICK GRID SECTION -->
+
+            <!-- KEEP HERO CARD -->
+
+            <div class="hs-card hero-card">
+
+                
+                <h1 class="hero-title">
+                    Host Dashboard
+                </h1>
+
+                <p class="hero-subtitle">
+                    Manage stays, reservations, guests and operations from one workspace.
+                </p>
+
+                <div class="hero-actions">
+
+                    <a href="{% url 'host_add_stay' %}" class="btn-primary"
+                        style="padding:12px 18px;text-decoration:none;">
+
+                        <span class="material-symbols-outlined icon-sm">add</span>
+                        Add Stay
+
+                    </a>
+
+                </div>
+                
+
+            </div>
+
+            <!-- MY STAYS -->
+
+            <div class="hs-card section-card">
+
+                
+                <div class="section-header">
+
+                    <div>
+                        <div class="section-title">
+                            My Stays
+                        </div>
+
+                        <div class="section-subtitle">
+                            All published and draft stays.
+                        </div>
+                    </div>
+
+                </div>
+
+                {% if stays %}
+
+                <div class="stay-grid">
+
+                    {% for stay in stays %}
+
+                    <div class="hs-card stay-card">
+
+                        <div class="stay-image">
+
+                            {% if stay.cover_image %}
+                            <img src="{{ stay.cover_image.url }}" alt="{{ stay.name }}">
+                            {% else %}
+
+                            <div class="stay-placeholder">
+
+                                <span class="material-symbols-outlined">
+                                    holiday_village
+                                </span>
+
+                            </div>
+
+                            {% endif %}
+
+                        </div>
+
+                        <div class="stay-content">
+
+                            <h3 class="stay-title">
+                                {{ stay.name }}
+                            </h3>
+
+                            <div class="stay-location">
+
+                                <span class="material-symbols-outlined icon-sm">
+                                    location_on
+                                </span>
+
+                                {{ stay.city }}
+
+                            </div>
+
+                            <div class="stay-meta">
+
+                                <span class="meta-pill">
+
+                                    <span class="material-symbols-outlined icon-sm">
+                                        bed
+                                    </span>
+
+                                    {{ stay.total_rooms }}
+
+                                </span>
+
+                                <span class="meta-pill">
+
+                                    <span class="material-symbols-outlined icon-sm">
+                                        currency_rupee
+                                    </span>
+
+                                    {{ stay.price_per_night }}
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+                {% else %}
+
+                <div class="empty-state">
+
+                    <div class="empty-title">
+                        No stays added yet
+                    </div>
+
+                    <div class="empty-subtitle">
+                        Create your first stay to start accepting reservations.
+                    </div>
+
+                </div>
+
+                {% endif %}
+                
+
+            </div>
+
+            <!-- RESERVATIONS -->
+
+            <div class="hs-card section-card">
+
+                <div class="section-header">
+
+                    <div>
+                        <div class="section-title">
+                            Recent Reservations
+                        </div>
+
+                        <div class="section-subtitle">
+                            Latest booking activity.
+                        </div>
+                    </div>
+
+                </div>
+
+                {% if bookings %}
+
+                {% for booking in bookings %}
+
+                <div class="reservation-row">
+
+                    <!-- Fill later -->
+
+                </div>
+
+                {% endfor %}
+
+                {% else %}
+
+                <div class="empty-state">
+
+                    <div class="empty-title">
+                        No reservations yet
+                    </div>
+
+                    <div class="empty-subtitle">
+                        Reservation activity will appear here.
+                    </div>
+
+                </div>
+
+                {% endif %}
+                
+
+            </div>
+
+            <!-- GUEST REQUESTS -->
+
+            <div class="hs-card section-card">
+
+                
+                <div class="section-header">
+
+                    <div>
+                        <div class="section-title">
+                            Guest Requests
+                        </div>
+
+                        <div class="section-subtitle">
+                            Messages and pending actions.
+                        </div>
+                    </div>
+
+                </div>
+
+                {% if requests %}
+
+                {% for request in requests %}
+
+                <div class="request-row">
+
+                    <!-- Fill later -->
+
+                </div>
+
+                {% endfor %}
+
+                {% else %}
+
+                <div class="empty-state">
+
+                    <div class="empty-title">
+                        No guest requests
+                    </div>
+
+                    <div class="empty-subtitle">
+                        Guest communication will appear here.
+                    </div>
+
+                </div>
+
+                {% endif %}
+                
+
+            </div>
+
+            <!-- FUTURE ANALYTICS -->
+
+            <div class="hs-card section-card">
+
+                
+                <div class="section-header">
+
+                    <div>
+                        <div class="section-title">
+                            Future Analytics
+                        </div>
+
+                        <div class="section-subtitle">
+                            Reserved for forecasting and business insights.
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="future-box">
+
+                    Occupancy trends, revenue analytics,
+                    AI forecasting and recommendations
+                    will appear here.
+
+                </div>
+                
+
+            </div>
+
+        </div>
+
+    </div>
+    
+
+</div>
+
+{% endblock %}

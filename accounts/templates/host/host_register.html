@@ -1,0 +1,255 @@
+{% extends "utils/host/host_base.html" %}
+
+{% block title %}Create account — HostStay{% endblock %}
+
+{% block nav %}
+  {% include "utils/host/host_nav.html" with variant="public" %}
+{% endblock %}
+
+{% block extra_head %}
+<style>
+  .register-wrap{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    min-height:100vh;
+    padding-top:72px;
+  }
+
+  .hero-panel{
+    position:relative;
+    overflow:hidden;
+    background:#1a1c1c;
+  }
+
+  .hero-bg{
+    position:absolute;
+    inset:0;
+    background:
+      linear-gradient(135deg, rgba(186,0,54,0.82) 0%, rgba(26,28,28,0.90) 60%),
+      url('https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=900&q=80') center/cover no-repeat;
+  }
+
+  .hero-content{
+    position:relative;
+    z-index:2;
+    min-height:calc(100vh - 72px);
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-end;
+    padding:48px;
+  }
+
+  .hero-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:rgba(255,255,255,0.12);
+    border:1px solid rgba(255,255,255,0.20);
+    border-radius:999px;
+    padding:8px 16px;
+    font-size:13px;
+    font-weight:600;
+    color:rgba(255,255,255,0.9);
+    width:fit-content;
+    margin-bottom:20px;
+    backdrop-filter:blur(8px);
+  }
+
+  .hero-headline{
+    font-size:42px;
+    font-weight:800;
+    color:#fff;
+    line-height:1.15;
+    margin-bottom:16px;
+  }
+
+  .hero-sub{
+    font-size:16px;
+    color:rgba(255,255,255,0.7);
+    line-height:1.6;
+    max-width:420px;
+    margin-bottom:36px;
+  }
+
+  .auth-panel{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:48px 40px;
+    background:#fff;
+  }
+
+  .auth-card{
+    width:100%;
+    max-width:460px;
+  }
+
+  .auth-title{
+    font-size:28px;
+    font-weight:800;
+    color:#1a1c1c;
+    margin-bottom:8px;
+  }
+
+  .auth-sub{
+    font-size:15px;
+    color:#5f5e5e;
+    margin-bottom:32px;
+  }
+
+  .input-group{
+    margin-bottom:18px;
+  }
+
+  .input-label{
+    display:block;
+    margin-bottom:8px;
+    font-size:14px;
+    font-weight:700;
+    color:#1a1c1c;
+  }
+
+  .form-input{
+    width:100%;
+    padding:15px 16px;
+    border:1.5px solid #e2e2e2;
+    border-radius:14px;
+    font-size:15px;
+    font-family:inherit;
+    outline:none;
+    transition:0.15s;
+    box-sizing:border-box;
+  }
+
+  .form-input:focus{
+    border-color:#1a1c1c;
+    border-width:2px;
+    box-shadow:0 0 0 3px rgba(186,0,54,0.08);
+  }
+
+  .btn-register{
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:14px;
+    background:linear-gradient(180deg,#d4003f 0%, #ba0036 100%);
+    color:#fff;
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
+    margin-top:10px;
+  }
+
+  .btn-register:hover{
+    opacity:0.92;
+  }
+
+  .login-link{
+    margin-top:20px;
+    text-align:center;
+    font-size:14px;
+    color:#5f5e5e;
+  }
+
+  .login-link a{
+    color:#ba0036;
+    text-decoration:none;
+    font-weight:700;
+  }
+
+  @media(max-width:768px){
+    .register-wrap{
+      grid-template-columns:1fr;
+    }
+
+    .hero-panel{
+      display:none;
+    }
+
+    .auth-panel{
+      padding:32px 20px;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="register-wrap">
+
+  <div class="hero-panel">
+    <div class="hero-bg"></div>
+
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="material-symbols-outlined icon-fill" style="font-size:16px; color:#ffb2b6;">
+          verified
+        </span>
+        Join the next generation of hosts
+      </div>
+
+      <h1 class="hero-headline">
+        Start hosting.<br>
+        Build income.
+      </h1>
+
+      <p class="hero-sub">
+        Create your HostStay account and start managing properties,
+        bookings, and guests from one unified platform.
+      </p>
+    </div>
+  </div>
+
+  <div class="auth-panel">
+    <div class="auth-card">
+      {% include "utils/alerts.html" %}
+      <h1 class="auth-title">Create your account</h1>
+      <p class="auth-sub">Sign up to continue to HostStay</p>
+
+      <form method="POST">
+        {% csrf_token %}
+
+        <div class="input-group">
+          <label class="input-label">Full Name</label>
+          <input type="text" name="name" class="form-input" placeholder="Enter your full name">
+        </div>
+
+        <div class="input-group">
+          <label class="input-label">Email Address</label>
+          <input type="email" name="email" class="form-input" placeholder="Enter your email">
+        </div>
+
+        <div class="input-group">
+          <label class="input-label">Phone Number</label>
+          <input type="tel" name="phone_number" class="form-input" placeholder="Enter your phone number">
+        </div>
+
+        <div class="input-group">
+          <label class="input-label">Business Name</label>
+          <input type="tel" name="business_name" class="form-input" placeholder="Enter your business name">
+        </div>
+
+        <div class="input-group">
+          <label class="input-label">Password</label>
+          <input type="password" name="password" class="form-input" placeholder="Create password">
+        </div>
+
+        <div class="input-group">
+          <label class="input-label">Confirm Password</label>
+          <input type="password" name="confirm_password" class="form-input" placeholder="Confirm password">
+        </div>
+
+        <button type="submit" class="btn-register">
+          Create Account
+        </button>
+      </form>
+
+      <div class="login-link">
+        Already have an account?
+        <a href="{% url 'login_view' %}">Log in</a>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+{% endblock %}

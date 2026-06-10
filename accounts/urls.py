@@ -1,0 +1,16 @@
+from django.urls import path
+from accounts import views
+urlpatterns = [
+    path('login/',views.login_view,name='login_view'),
+    path('register/',views.register_view,name='register_view'),
+    path('send-otp/',views.send_OTP, name='send_OTP'),
+    path('verify-otp/<email>/',views.verify_otp, name='verify_otp'),
+    path('verify-account/<token>/',views.verify_email_token,name='verify_email_token'),
+    path('host-login/',views.host_login,name='host_login'),
+    path('host-register/',views.host_register,name='host_register'),
+    path('send-otp-host/',views.send_OTP_host, name='send_OTP_host'),
+    path('verify-otp-host/<email>/',views.verify_otp_host, name='verify_otp_host'),
+    path('verify-account-host/<token>/',views.verify_email_token_host,name='verify_email_token_host'),
+    path('host-dashboard/',views.host_dashboard,name='host_dashboard'),
+    path('host-add-stay/',views.host_add_stay,name='host_add_stay'),
+]   

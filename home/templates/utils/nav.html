@@ -1,0 +1,272 @@
+{% if variant == "public" %}
+
+<!-- ════════════════════════════════════
+       PUBLIC NAV  (login / signup / verify)
+       ════════════════════════════════════ -->
+<nav style="
+    position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+    height: 72px; background: #fff; border-bottom: 1px solid #e2e2e2;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 80px;
+  ">
+    <!-- Logo -->
+    <a href="/" style="display:flex; align-items:center; gap:8px; text-decoration:none;">
+        <span class="material-symbols-outlined icon-fill" style="color:#ba0036; font-size:26px;">house</span>
+        <span style="font-size:22px; font-weight:800; color:#ba0036; letter-spacing:-0.02em;">HostStay</span>
+    </a>
+
+    <!-- Destination pills -->
+    <div class="pub-nav-cities">
+        <span class="pub-city-pill">Paris</span>
+        <span class="pub-city-pill">Toronto</span>
+        <span class="pub-city-pill">Miami</span>
+        <span class="pub-city-pill">Tokyo</span>
+        <span class="pub-city-pill">London</span>
+        <span class="pub-city-pill">Sydney</span>
+    </div>
+
+    <!-- Right actions -->
+    <div style="display:flex; align-items:center; gap:8px;">
+        <a href="#" class="pub-nav-link">Become a host</a>
+        <a href="/login/" class="btn-primary" style="padding:10px 20px; border-radius:99px; font-size:13px; text-decoration:none;">
+
+            <span class="material-symbols-outlined icon-sm">account_circle</span>
+            Log in
+        </a>
+    </div>
+</nav>
+
+<style>
+    .pub-nav-cities {
+        display: flex;
+        gap: 4px;
+    }
+
+    .pub-city-pill {
+        font-size: 13px;
+        font-weight: 600;
+        color: #5f5e5e;
+        padding: 6px 14px;
+        border-radius: 99px;
+        cursor: pointer;
+        transition: background 0.15s, color 0.15s;
+    }
+
+    .pub-city-pill:hover {
+        background: #f3f3f3;
+        color: #1a1c1c;
+    }
+
+    .pub-nav-link {
+        font-size: 14px;
+        font-weight: 600;
+        color: #5f5e5e;
+        text-decoration: none;
+        padding: 8px 14px;
+        border-radius: 99px;
+        transition: background 0.15s;
+    }
+
+    .pub-nav-link:hover {
+        background: #f3f3f3;
+        color: #1a1c1c;
+    }
+
+    @media (max-width: 900px) {
+        .pub-nav-cities {
+            display: none !important;
+        }
+
+        nav {
+            padding: 0 16px !important;
+        }
+    }
+</style>
+
+{% elif variant == "auth" %}
+
+<!-- ════════════════════════════════════
+       AUTH TOPBAR  (dashboard / inner pages)
+       ════════════════════════════════════ -->
+<header style="
+    position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+    height: 72px; background: #fff; border-bottom: 1px solid #e2e2e2;
+    display: flex; align-items: center;
+    padding: 0 24px; gap: 16px;
+  ">
+    <!-- Logo — same width as sidebar so content aligns -->
+    <a href="/" style="display:flex; align-items:center; gap:8px; text-decoration:none; min-width:256px;">
+        <span class="material-symbols-outlined icon-fill" style="color:#ba0036; font-size:24px;">house</span>
+        <span style="font-size:20px; font-weight:800; color:#ba0036; letter-spacing:-0.02em;">HostStay</span>
+    </a>
+
+    <!-- Top nav links -->
+    <nav style="display:flex; align-items:center; gap:4px; flex:1;">
+        <a href="{% url 'listings' %}"
+            class="auth-toplink {% if active_nav == 'listings' %}active{% endif %}">Listings</a>
+        <a href="{% url 'inbox' %}" class="auth-toplink {% if active_nav == 'inbox' %}active{% endif %}">Inbox</a>
+        <a href="{% url 'calendar' %}"
+            class="auth-toplink {% if active_nav == 'calendar' %}active{% endif %}">Calendar</a>
+    </nav>
+
+    <!-- Right cluster -->
+    <div style="display:flex; align-items:center; gap:8px;">
+        <!-- Search -->
+        <div
+            style="display:flex; align-items:center; gap:8px; background:#f3f3f3; border:1px solid #e2e2e2; border-radius:99px; padding:8px 16px;">
+            <span class="material-symbols-outlined icon-sm" style="color:#5f5e5e;">search</span>
+            <input type="text" placeholder="Search reservations…" style="
+          background:transparent; border:none; outline:none;
+          font-family:inherit; font-size:13px; color:#1a1c1c; width:160px;
+        " />
+        </div>
+
+        <!-- Notifications -->
+        <button class="auth-icon-btn" title="Notifications" style="position:relative;">
+            <span class="material-symbols-outlined" style="font-size:22px;">notifications</span>
+            <span
+                style="position:absolute; top:7px; right:7px; width:8px; height:8px; border-radius:50%; background:#ba0036; border:2px solid #fff;"></span>
+        </button>
+
+        <!-- Help -->
+        <button class="auth-icon-btn" title="Help">
+            <span class="material-symbols-outlined" style="font-size:22px;">help</span>
+        </button>
+
+        <!-- Avatar -->
+        <div
+            style="width:38px; height:38px; border-radius:50%; border:2px solid #e5bdbe; overflow:hidden; cursor:pointer; background:#e2e2e2;">
+            {% if user.avatar %}
+            <img src="{{ user.avatar.url }}" alt="{{ user.get_full_name }}"
+                style="width:100%; height:100%; object-fit:cover;" />
+            {% else %}
+            <div
+                style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:rgba(186,0,54,0.10); color:#ba0036; font-weight:700; font-size:14px;">
+                {{ user.first_name|first|upper }}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</header>
+
+<!-- ════════════════════════════════════
+       SIDEBAR  (always paired with auth topbar)
+       ════════════════════════════════════ -->
+<aside style="
+    position: fixed; top: 72px; left: 0;
+    width: 280px; height: calc(100vh - 72px);
+    background: #fff; border-right: 1px solid #e2e2e2;
+    display: flex; flex-direction: column;
+    padding: 24px 0 16px; z-index: 40; overflow-y: auto;
+  ">
+    <!-- Host identity -->
+    <div style="padding: 0 24px 24px; border-bottom: 1px solid #e2e2e2; margin-bottom: 8px;">
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px;">
+            <div class="stat-icon-wrap">
+                <span class="material-symbols-outlined icon-fill">home_work</span>
+            </div>
+            <div>
+                <p
+                    style="font-size:12px; font-weight:700; color:#ba0036; letter-spacing:0.04em; text-transform:uppercase; margin:0 0 2px;">
+                    Host Management</p>
+                <p style="font-size:13px; color:#5f5e5e; margin:0; font-weight:500;">{{ user.tier|default:"Premium Tier"
+                    }}</p>
+            </div>
+        </div>
+        <a href="{% url 'property_add' %}" class="btn-primary"
+            style="width:100%; padding:11px; border-radius:10px; font-size:13px; text-decoration:none;">
+            <span class="material-symbols-outlined icon-sm">add</span>
+            Add New Property
+        </a>
+    </div>
+
+    <!-- Nav links -->
+    <nav style="flex:1; padding: 4px 0;">
+        <a href="{% url 'dashboard' %}" class="nav-item {% if active_nav == 'dashboard' %}active{% endif %}">
+            <span class="material-symbols-outlined icon-sm">dashboard</span> Dashboard
+        </a>
+        <a href="{% url 'reservations' %}" class="nav-item {% if active_nav == 'reservations' %}active{% endif %}">
+            <span class="material-symbols-outlined icon-sm">event_note</span> Reservations
+        </a>
+        <a href="{% url 'properties' %}" class="nav-item {% if active_nav == 'properties' %}active{% endif %}">
+            <span class="material-symbols-outlined icon-sm">home_work</span> Properties
+        </a>
+        <a href="{% url 'earnings' %}" class="nav-item {% if active_nav == 'earnings' %}active{% endif %}">
+            <span class="material-symbols-outlined icon-sm">payments</span> Earnings
+        </a>
+        <a href="{% url 'settings' %}" class="nav-item {% if active_nav == 'settings' %}active{% endif %}">
+            <span class="material-symbols-outlined icon-sm">settings</span> Settings
+        </a>
+    </nav>
+
+    <!-- Bottom links -->
+    <div style="border-top:1px solid #e2e2e2; padding: 8px 0 0;">
+        <a href="{% url 'help' %}" class="nav-item">
+            <span class="material-symbols-outlined icon-sm">help</span> Help Center
+        </a>
+        <a href="{% url 'logout' %}" class="nav-item" style="color:#ba1a1a;">
+            <span class="material-symbols-outlined icon-sm">logout</span> Log Out
+        </a>
+    </div>
+</aside>
+
+<style>
+    .auth-toplink {
+        font-size: 14px;
+        font-weight: 600;
+        color: #5f5e5e;
+        text-decoration: none;
+        padding: 8px 14px;
+        border-radius: 8px;
+        border-bottom: 2px solid transparent;
+        transition: background 0.15s, color 0.15s;
+    }
+
+    .auth-toplink:hover {
+        background: #f3f3f3;
+        color: #1a1c1c;
+    }
+
+    .auth-toplink.active {
+        color: #ba0036;
+        font-weight: 700;
+        border-bottom-color: #ba0036;
+    }
+
+    .auth-icon-btn {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        border: none;
+        background: transparent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: #5f5e5e;
+        transition: background 0.15s;
+    }
+
+    .auth-icon-btn:hover {
+        background: #f3f3f3;
+        color: #1a1c1c;
+    }
+
+    /* Push main content past the sidebar */
+    .with-sidebar {
+        margin-left: 280px;
+        padding-top: 72px;
+    }
+
+    @media (max-width: 1024px) {
+        aside {
+            display: none;
+        }
+
+        .with-sidebar {
+            margin-left: 0;
+        }
+    }
+</style>
+
+{% endif %}

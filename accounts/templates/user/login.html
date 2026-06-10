@@ -1,0 +1,293 @@
+{% extends "utils/base.html" %}
+
+{% block title %}Log in or sign up — HostStay{% endblock %}
+
+{% block nav %}
+  {% include "utils/nav.html" with variant="public" %}
+{% endblock %}
+
+{% block extra_head %}
+<style>
+  /* ── Two-column page layout ── */
+  .login-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 100vh;
+    padding-top: 72px; /* nav height */
+  }
+
+  /* ── LEFT: Hero panel ── */
+  .hero-panel {
+    position: relative;
+    overflow: hidden;
+    background: #1a1c1c;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(135deg, rgba(186,0,54,0.82) 0%, rgba(26,28,28,0.90) 60%),
+      url('https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=900&q=80') center/cover no-repeat;
+  }
+  .hero-content {
+    position: relative; z-index: 2;
+    min-height: calc(100vh - 72px);
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 48px;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.20);
+    border-radius: 99px; padding: 8px 16px;
+    font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.90);
+    margin-bottom: 20px; backdrop-filter: blur(8px); width: fit-content;
+  }
+  .hero-headline {
+    font-size: 42px; font-weight: 800; color: #fff;
+    line-height: 1.15; letter-spacing: -0.02em; margin-bottom: 16px;
+  }
+  .hero-sub {
+    font-size: 16px; color: rgba(255,255,255,0.68); line-height: 1.6;
+    max-width: 380px; margin-bottom: 36px;
+  }
+  .hero-stats { display: flex; gap: 32px; }
+  .hero-stat-val   { font-size: 26px; font-weight: 800; color: #fff; }
+  .hero-stat-label { font-size: 12px; color: rgba(255,255,255,0.52); font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; margin-top: 2px; }
+
+  /* Floating destination cards */
+  .dest-cards {
+    position: absolute; top: 40px; right: 32px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .dest-card {
+    background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.18);
+    backdrop-filter: blur(12px); border-radius: 12px;
+    padding: 10px 16px; display: flex; align-items: center; gap: 10px;
+    color: #fff; font-size: 13px; font-weight: 600;
+  }
+  .dest-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.55); }
+  .dest-dot.hot { background: #ffb2b6; }
+
+  /* ── RIGHT: Auth panel ── */
+  .auth-panel {
+    display: flex; align-items: center; justify-content: center;
+    padding: 48px 40px; background: #fff;
+  }
+  .auth-card { width: 100%; max-width: 440px; }
+  .auth-title { font-size: 26px; font-weight: 800; color: #1a1c1c; letter-spacing: -0.02em; margin-bottom: 8px; }
+  .auth-sub   { font-size: 15px; color: #5f5e5e; margin-bottom: 32px; }
+
+  /* Phone input */
+  .phone-wrap {
+    display: flex; border: 1.5px solid #e2e2e2; border-radius: 14px; overflow: hidden;
+    background: #fff; transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .phone-wrap:focus-within {
+    border-color: #1a1c1c; border-width: 2px; box-shadow: 0 0 0 3px rgba(186,0,54,0.08);
+  }
+  .country-select {
+    display: flex; align-items: center; gap: 6px; padding: 14px;
+    border-right: 1.5px solid #e2e2e2; background: #f9f9f9;
+    font-size: 14px; font-weight: 600; color: #1a1c1c; cursor: pointer; white-space: nowrap;
+  }
+  .phone-input {
+    flex: 1; border: none; outline: none; padding: 14px 16px;
+    font-family: inherit; font-size: 16px; color: #1a1c1c; background: transparent;
+  }
+  .phone-input::placeholder { color: #b0b0b0; }
+
+  .privacy-note { font-size: 12px; color: #5f5e5e; margin-top: 10px; line-height: 1.5; }
+  .privacy-note a { color: #1a1c1c; font-weight: 700; }
+
+  .btn-continue {
+    width: 100%; padding: 15px; border-radius: 12px; margin-top: 16px;
+    background: linear-gradient(180deg, #d4003f 0%, #ba0036 100%);
+    color: #fff; font-family: inherit; font-weight: 700; font-size: 15px;
+    letter-spacing: 0.02em; border: none; cursor: pointer;
+    transition: opacity 0.15s, transform 0.1s;
+  }
+  .btn-continue:hover  { opacity: 0.90; }
+  .btn-continue:active { transform: scale(0.99); }
+
+  /* Footer links */
+  .auth-footer { border-top: 1px solid #e2e2e2; padding-top: 28px; margin-top: 32px; }
+  .footer-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px 12px; }
+  .footer-col-title { font-size: 12px; font-weight: 700; color: #1a1c1c; margin-bottom: 8px; }
+  .footer-link { display: block; font-size: 12px; color: #5f5e5e; text-decoration: none; margin-bottom: 5px; transition: color 0.12s; }
+  .footer-link:hover { color: #1a1c1c; }
+
+  @media (max-width: 768px) {
+    .login-wrap { grid-template-columns: 1fr; }
+    .hero-panel { display: none; }
+    .auth-panel { padding: 32px 20px; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="login-wrap">
+
+  <!-- ═══ LEFT: Hero ═══ -->
+  <div class="hero-panel">
+    <div class="hero-bg"></div>
+
+    <!-- Floating city cards -->
+    <div class="dest-cards">
+      <div class="dest-card"><div class="dest-dot hot"></div>Paris · 1,240 listings</div>
+      <div class="dest-card"><div class="dest-dot"></div>Tokyo · 980 listings</div>
+      <div class="dest-card"><div class="dest-dot"></div>Miami · 745 listings</div>
+      <div class="dest-card"><div class="dest-dot"></div>London · 1,560 listings</div>
+    </div>
+
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="material-symbols-outlined icon-fill" style="font-size:16px; color:#ffb2b6;">verified</span>
+        Trusted by 4M+ guests worldwide
+      </div>
+      <h1 class="hero-headline">Host smarter.<br/>Earn more.</h1>
+      <p class="hero-sub">Join thousands of professional hosts managing their properties with confidence — all in one place.</p>
+      <div class="hero-stats">
+        <div><div class="hero-stat-val">$14K+</div><div class="hero-stat-label">Avg. monthly earnings</div></div>
+        <div><div class="hero-stat-val">92%</div><div class="hero-stat-label">Avg. occupancy rate</div></div>
+        <div><div class="hero-stat-val">4.9★</div><div class="hero-stat-label">Host satisfaction</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ RIGHT: Auth form ═══ -->
+  <div class="auth-panel">
+    <div class="auth-card">
+      {% include "utils/alerts.html" %}
+      <h1 class="auth-title anim anim-d1">Log in or sign up</h1>
+      <p class="auth-sub anim anim-d2">Welcome to HostStay</p>
+
+     <form method="POST">
+    {% csrf_token %}
+
+    <!-- Email or Phone -->
+    <div style="margin-bottom:16px;">
+        <label style="display:block; margin-bottom:8px; font-weight:600;">
+            Email or Phone Number
+        </label>
+
+        <input
+            type="text"
+            name="identifier"
+            placeholder="Enter email or phone number"
+            required
+            style="
+                width:100%;
+                padding:14px 16px;
+                border:1.5px solid #e2e2e2;
+                border-radius:14px;
+                font-size:16px;
+                outline:none;
+            "
+        >
+    </div>
+    <a href="/accounts/send_otp/" 
+       style="color:#ba0036; font-weight:700; text-decoration:none;">
+       Login with OTP
+    </a>
+
+    <!-- Password -->
+    <div style="margin-bottom:16px;">
+        <label style="display:block; margin-bottom:8px; font-weight:600;">
+            Password
+        </label>
+
+        <input
+            type="password"
+            name="password"
+            placeholder="Enter password"
+            required
+            style="
+                width:100%;
+                padding:14px 16px;
+                border:1.5px solid #e2e2e2;
+                border-radius:14px;
+                font-size:16px;
+                outline:none;
+            "
+        >
+    </div>
+
+    <button type="submit" class="btn-continue">
+        Login
+    </button>
+
+</form>
+
+      <div style="margin-top:16px; text-align:center;" class="anim anim-d3">
+  <span style="font-size:14px; color:#5f5e5e;">
+    Don't have an account?
+    <a href="{% url 'register_view' %}" 
+       style="color:#ba0036; font-weight:700; text-decoration:none;">
+       Register
+    </a>
+  </span>
+</div>
+
+      <div class="or-divider anim anim-d3" style="margin: 24px 0;">or</div>
+
+      <!-- Social -->
+      <div class="anim anim-d4" style="display:flex; flex-direction:column; gap:10px;">
+        <button class="btn-social">
+          <span class="material-symbols-outlined" style="font-size:20px; color:#5f5e5e;">mail</span>
+          Continue with Email
+        </button>
+        <button class="btn-social">
+          <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          Continue with Google
+        </button>
+        <button class="btn-social">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98l-.09.06c-.22.15-2.18 1.27-2.16 3.8.03 3.02 2.65 4.03 2.68 4.04l-.07.28zM13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+          Continue with Apple
+        </button>
+      </div>
+
+      <!-- Footer links -->
+      <div class="auth-footer anim anim-d5">
+        <div class="footer-grid">
+          <div>
+            <div class="footer-col-title">Support</div>
+            <a href="#" class="footer-link">Help Center</a>
+            <a href="#" class="footer-link">Safety issue</a>
+            <a href="#" class="footer-link">AirCover</a>
+            
+          </div>
+          <div>
+            <div class="footer-col-title">Hosting</div>
+            <a href="#" class="footer-link">Host your home</a>
+            <a href="#" class="footer-link">Resources</a>
+            <a href="#" class="footer-link">Community</a>
+            
+          </div>
+          <div>
+            <div class="footer-col-title">Company</div>
+            <a href="#" class="footer-link">Newsroom</a>
+            <a href="#" class="footer-link">New features</a>
+            <a href="#" class="footer-link">Careers</a>
+
+          </div>
+        </div>
+        <div style="margin-top:20px; padding-top:16px; border-top:1px solid #e2e2e2; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+          <span style="font-size:12px; color:#5f5e5e;">© 2024 HostStay Hospitality. All rights reserved.</span>
+          <div style="display:flex; gap:16px;">
+            <a href="#" class="footer-link" style="margin:0;">Privacy</a>
+            <a href="#" class="footer-link" style="margin:0;">Terms</a>
+            <a href="#" class="footer-link" style="margin:0;">Contact</a>
+            <a href="{% url 'host_login' %}" class="footer-link" style="margin:0;">Login_host</a>
+            <a href="{% url 'host_register' %}" class="footer-link" style="margin:0;">Register_host</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+
+{% endblock %}
