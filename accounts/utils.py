@@ -60,10 +60,10 @@ def sendOTPtoEmailHost(email, otp):
         fail_silently=False,
     )
 
-def generateSlug(instance):
-    slug= slugify(instance.hotel_name) + str(uuid.uuid4()).split('-')[0]
-    if Hotel.objects.filter(slug=slug).exists():
-        return generateSlug(instance)
+def generateSlug(hotel_name):
+    slug= slugify(hotel_name) + "-" + str(uuid.uuid4()).split('-')[0]
+    if Hotel.objects.filter(hotel_slug=slug).exists():
+        return generateSlug(hotel_name)
     
     return slug
     

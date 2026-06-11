@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 # from django.contrib.auth.models import User
-from .models import HotelUser, HotelVendor, Hotel, Ameneties
+from .models import HotelUser, HotelVendor, Hotel, Ameneties, HotelImage
 from django.db.models import Q
 from .utils import generateRandomToken, sendEmailToken, sendOTPtoEmail, sendEmailTokenHost, sendOTPtoEmailHost,generateSlug
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate,login
 from django.contrib.auth.decorators import login_required
 import random
@@ -132,28 +132,36 @@ def verify_otp(request, email):
 def host_login(request):
     if request.method == "POST":
         email=request.POST.get('email')
+        print("POST:", request.POST)
+        print("EMAIL:", email)
+
+        hotel_host = HotelVendor.objects.filter(
+            email__iexact=email.strip()
+        )
+
+        print("COUNT:", hotel_host.count())
         password=request.POST.get('password')
 
         hotel_host = HotelVendor.objects.filter(email =email)
 
         if not hotel_host.exists():
             messages.warning(request, "No host Account Found")
-            return redirect('/account/host-login/')
+            return redirect('/accounts/host-login/')
         
         
         if not hotel_host[0].is_verified:
             messages.warning(request,"Account not verified")
-            return redirect('/account/host-login/')
+            return redirect('/accounts/host-login/')
         
         hotel_host=authenticate(username=hotel_host[0].username, password=password)
 
         if hotel_host:
             messages.success(request,"Login Success")
             login(request, hotel_host)
-            return redirect('/account/host-login/')
+            return redirect('/accounts/host-dashboard/')
         
         messages.warning(request,"Invalid Credentials")
-        return redirect('/account/host-login/')
+        return redirect('/accounts/host-login/')
     return render(request,"host/host_login.html")
 
 
@@ -246,36 +254,77 @@ def verify_otp_host(request, email):
 
 @login_required(login_url="host_login")
 def host_dashboard(request):
-    return render(request,"host/host_dashboard.html")
+    
+    print("CURRENT USER:", request.user)
+    print("USER ID:", request.user.id)
+
+    stays = Hotel.objects.filter(hotel_owner=request.user)
+
+    print("STAYS COUNT:", stays.count())
+    print("ALL HOTELS:", Hotel.objects.all())
+
+    context={'stays': Hotel.objects.filter(hotel_owner=request.user)}
+    return render(request,"host/host_dashboard.html",context)
 
 
-# @login_required(login_url="host_login")
+@login_required(login_url="host_login")
 def host_add_stay(request):
     if request.method=="POST":
         hotel_name= request.POST.get('hotel_name')
         hotel_description=request.POST.get('hotel_description')
-        ameneties= request.POST.get('ameneties')
+        ameneties= request.POST.getlist('ameneties')
         hotel_price=request.POST.get('hotel_price')
         hotel_offer_price=request.POST.get('hotel_offer_price')
         hotel_location=request.POST.get('hotel_location')
         hotel_slug= generateSlug(hotel_name)
-
-        Hotel.objects.create(
+        hotel_host=HotelVendor.objects.get(id=request.user.id)
+    # print(
+    #       f""" 
+    #       {hotel_name,
+    #       hotel_description,
+    #       ameneties,
+    #       hotel_price,
+    #       hotel_offer_price,
+    #       hotel_location,
+    #       hotel_slug}"""
+    #     )
+        hotel_obj=Hotel.objects.create(
             hotel_name=hotel_name,
             hotel_description=hotel_description,
             hotel_price=hotel_price,
             hotel_offer_price=hotel_offer_price,
             hotel_location=hotel_location,
             hotel_slug=hotel_slug,
-            
+            hotel_owner=hotel_host
         )
 
-        messages.warning(request,"Hotel Created")
+        for amenety in ameneties:
+            amenety= Ameneties.objects.get(id=amenety)
+            hotel_obj.ameneties.add(amenety)
+            hotel_obj.save()
+
+        messages.success(request,"Hotel Created")
         return redirect(f'/accounts/host-dashboard')
     
     ameneties=Ameneties.objects.all()
     
     return render(request, 'host/host_add_stay.html', context={'ameneties': ameneties})
 
+
+@login_required(login_url="host_login")
+def host_upload_stay_images(request,slug):
+    hotel_obj= Hotel.objects.get(hotel_slug=slug)
+    if request.method == "POST":
+        image=request.FILES['images']
+        print(image)
+        HotelImage.objects.create(
+           hotel= hotel_obj,
+           image=image
+        )
+        return HttpResponseRedirect(request.path_info)
+    return render(request, 'host/host_upload_stay_images.html', context={
+    "images": HotelImage.objects.filter(hotel=hotel_obj),
+    "stay": hotel_obj
+})
 
 

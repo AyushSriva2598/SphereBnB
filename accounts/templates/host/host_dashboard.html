@@ -1,5 +1,5 @@
 {% extends "utils/base.html" %}
-
+{% load static %}
 {% block title %}Host Dashboard — HostStay{% endblock %}
 
 {% block nav %}
@@ -46,41 +46,6 @@
         flex-wrap: wrap;
     }
 
-    .quick-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-        gap: 20px;
-    }
-
-    .quick-card {
-        padding: 24px;
-    }
-
-    .quick-icon {
-        width: 52px;
-        height: 52px;
-        border-radius: 12px;
-        background: rgba(186, 0, 54, 0.08);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #ba0036;
-        margin-bottom: 16px;
-    }
-
-    .quick-title {
-        font-size: 16px;
-        font-weight: 700;
-        color: #1a1c1c;
-        margin-bottom: 8px;
-    }
-
-    .quick-desc {
-        font-size: 14px;
-        color: #5f5e5e;
-        line-height: 1.5;
-    }
-
     .section-card {
         padding: 24px;
     }
@@ -96,6 +61,12 @@
         font-size: 18px;
         font-weight: 700;
         color: #1a1c1c;
+    }
+
+    .section-subtitle {
+        font-size: 13px;
+        color: #5f5e5e;
+        margin-top: 4px;
     }
 
     .empty-state {
@@ -129,37 +100,19 @@
         font-size: 14px;
     }
 
-    @media(max-width:768px) {
-
-        .dashboard-wrapper {
-            padding: 100px 16px 24px;
-        }
-
-        .hero-title {
-            font-size: 26px;
-        }
-
-        .quick-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-
-    .section-subtitle {
-        font-size: 13px;
-        color: #5f5e5e;
-        margin-top: 4px;
-    }
+    /* STAY GRID */
 
     .stay-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 20px;
+        gap: 24px;
     }
 
     .stay-card {
         overflow: hidden;
-        cursor: pointer;
-        transition: all .2s ease;
+        display: flex;
+        flex-direction: column;
+        border-radius: 16px;
     }
 
     .stay-card:hover {
@@ -168,14 +121,109 @@
     }
 
     .stay-image {
-        height: 180px;
+        position: relative;
+        width: 100%;
+        aspect-ratio: 4 / 3;
         background: #f3f3f3;
+        overflow: hidden;
     }
 
     .stay-image img {
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        object-fit: contain;
+        display: block;
+    }
+
+    .upload-img-btn {
+        text-decoration: none;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 12px;
+        border: none;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.92);
+        color: #1a1c1c;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, .12);
+    }
+
+    .upload-img-btn:hover {
+        background: #fff;
+    }
+
+    /* UPLOAD MODAL */
+
+    .upload-modal-bg {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, .45);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .upload-modal-bg.active {
+        display: flex;
+    }
+
+    .upload-modal {
+        background: #fff;
+        border-radius: 16px;
+        padding: 28px;
+        width: 100%;
+        max-width: 380px;
+    }
+
+    .upload-modal h3 {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 6px;
+        color: #1a1c1c;
+    }
+
+    .upload-modal p {
+        font-size: 13px;
+        color: #5f5e5e;
+        margin-bottom: 18px;
+    }
+
+    .upload-modal input[type="file"] {
+        width: 100%;
+        margin-bottom: 18px;
+        font-size: 13px;
+    }
+
+    .upload-modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    .upload-modal-actions button {
+        border: none;
+        border-radius: 8px;
+        padding: 10px 16px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .upload-cancel-btn {
+        background: #f3f3f3;
+        color: #1a1c1c;
+    }
+
+    .upload-submit-btn {
+        background: #ba0036;
+        color: #fff;
     }
 
     .stay-placeholder {
@@ -193,6 +241,9 @@
 
     .stay-content {
         padding: 18px;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
     }
 
     .stay-title {
@@ -207,7 +258,15 @@
         gap: 4px;
         color: #5f5e5e;
         font-size: 14px;
+        margin-bottom: 12px;
+    }
+
+    .stay-desc {
+        color: #5f5e5e;
+        font-size: 14px;
         margin-bottom: 16px;
+        line-height: 1.5;
+        flex: 1;
     }
 
     .stay-meta {
@@ -226,6 +285,21 @@
         font-size: 13px;
         font-weight: 600;
     }
+
+    @media(max-width:768px) {
+
+        .dashboard-wrapper {
+            padding: 100px 16px 24px;
+        }
+
+        .hero-title {
+            font-size: 26px;
+        }
+
+        .stay-grid {
+            grid-template-columns: 1fr;
+        }
+    }
 </style>
 
 {% endblock %}
@@ -233,290 +307,228 @@
 {% block content %}
 
 <div class="dashboard-wrapper">
-
-    
     <div class="dashboard-content">
 
-        <!-- Dashboard Header -->
-
+        <!-- HERO -->
         <div class="hs-card hero-card">
 
-            <!-- REMOVE THE ENTIRE QUICK GRID SECTION -->
+            <h1 class="hero-title">
+                Host Dashboard
+            </h1>
 
-            <!-- KEEP HERO CARD -->
+            <p class="hero-subtitle">
+                Manage stays, reservations, guests and operations from one workspace.
+            </p>
 
-            <div class="hs-card hero-card">
+            <div class="hero-actions">
+                <a href="{% url 'host_add_stay' %}" class="btn-primary"
+                    style="padding:12px 18px;text-decoration:none;">
+                    <span class="material-symbols-outlined icon-sm">add</span>
+                    Add Stay
+                </a>
+            </div>
 
-                
-                <h1 class="hero-title">
-                    Host Dashboard
-                </h1>
+        </div>
 
-                <p class="hero-subtitle">
-                    Manage stays, reservations, guests and operations from one workspace.
-                </p>
+        <!-- MY STAYS -->
+        {% if stays %}
 
-                <div class="hero-actions">
+        <div class="stay-grid">
 
-                    <a href="{% url 'host_add_stay' %}" class="btn-primary"
-                        style="padding:12px 18px;text-decoration:none;">
+            {% for stay in stays %}
 
-                        <span class="material-symbols-outlined icon-sm">add</span>
-                        Add Stay
+            <div class="hs-card stay-card">
 
+                {% with image=stay.hotel_images.first %}
+                <div class="stay-image">
+                    {% if image %}
+                    <img src="{{ image.image.url }}" alt="{{ stay.hotel_name }}">
+                    {% else %}
+                    <img src="{% static 'accounts/images/default-hotel.jpg' %}" alt="Default Hotel">
+                    {% endif %}
+
+                    
+                    <a href="{% url 'host_upload_stay_images' stay.hotel_slug %}" class="upload-img-btn">
+                        <span class="material-symbols-outlined icon-sm">photo_camera</span>
+                        Upload
                     </a>
+                   
 
                 </div>
-                
+                {% endwith %}
+
+                <div class="stay-content">
+
+                    <h3 class="stay-title">
+                        {{ stay.hotel_name }}
+                    </h3>
+
+                    <div class="stay-location">
+                        <span class="material-symbols-outlined icon-sm">location_on</span>
+                        {{ stay.hotel_location }}
+                    </div>
+
+                    <p class="stay-desc">
+                        {{ stay.hotel_description|truncatechars:120 }}
+                    </p>
+
+                    <div class="stay-meta">
+                        <span class="meta-pill">
+                            <span class="material-symbols-outlined icon-sm">currency_rupee</span>
+                            {{ stay.hotel_price }}
+                        </span>
+
+                        {% if stay.hotel_offer_price %}
+                        <span class="meta-pill">
+                            Offer: ₹{{ stay.hotel_offer_price }}
+                        </span>
+                        {% endif %}
+                    </div>
+
+                </div>
 
             </div>
 
-            <!-- MY STAYS -->
+            {% endfor %}
 
-            <div class="hs-card section-card">
+        </div>
 
-                
-                <div class="section-header">
+        {% else %}
 
-                    <div>
-                        <div class="section-title">
-                            My Stays
-                        </div>
+        <div class="empty-state">
+            <div class="empty-title">No stays added yet</div>
+            <div class="empty-subtitle">Create your first stay to start accepting reservations.</div>
+        </div>
 
-                        <div class="section-subtitle">
-                            All published and draft stays.
-                        </div>
-                    </div>
+        {% endif %}
 
+        <!-- RESERVATIONS -->
+        <div class="hs-card section-card">
+
+            <div class="section-header">
+                <div>
+                    <div class="section-title">Recent Reservations</div>
+                    <div class="section-subtitle">Latest booking activity.</div>
                 </div>
-
-                {% if stays %}
-
-                <div class="stay-grid">
-
-                    {% for stay in stays %}
-
-                    <div class="hs-card stay-card">
-
-                        <div class="stay-image">
-
-                            {% if stay.cover_image %}
-                            <img src="{{ stay.cover_image.url }}" alt="{{ stay.name }}">
-                            {% else %}
-
-                            <div class="stay-placeholder">
-
-                                <span class="material-symbols-outlined">
-                                    holiday_village
-                                </span>
-
-                            </div>
-
-                            {% endif %}
-
-                        </div>
-
-                        <div class="stay-content">
-
-                            <h3 class="stay-title">
-                                {{ stay.name }}
-                            </h3>
-
-                            <div class="stay-location">
-
-                                <span class="material-symbols-outlined icon-sm">
-                                    location_on
-                                </span>
-
-                                {{ stay.city }}
-
-                            </div>
-
-                            <div class="stay-meta">
-
-                                <span class="meta-pill">
-
-                                    <span class="material-symbols-outlined icon-sm">
-                                        bed
-                                    </span>
-
-                                    {{ stay.total_rooms }}
-
-                                </span>
-
-                                <span class="meta-pill">
-
-                                    <span class="material-symbols-outlined icon-sm">
-                                        currency_rupee
-                                    </span>
-
-                                    {{ stay.price_per_night }}
-
-                                </span>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    {% endfor %}
-
-                </div>
-
-                {% else %}
-
-                <div class="empty-state">
-
-                    <div class="empty-title">
-                        No stays added yet
-                    </div>
-
-                    <div class="empty-subtitle">
-                        Create your first stay to start accepting reservations.
-                    </div>
-
-                </div>
-
-                {% endif %}
-                
-
             </div>
 
-            <!-- RESERVATIONS -->
+            {% if bookings %}
+            {% for booking in bookings %}
+            <div class="reservation-row">
+                <!-- Fill later -->
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-title">No reservations yet</div>
+                <div class="empty-subtitle">Reservation activity will appear here.</div>
+            </div>
+            {% endif %}
 
-            <div class="hs-card section-card">
+        </div>
 
-                <div class="section-header">
+        <!-- GUEST REQUESTS -->
+        <div class="hs-card section-card">
 
-                    <div>
-                        <div class="section-title">
-                            Recent Reservations
-                        </div>
-
-                        <div class="section-subtitle">
-                            Latest booking activity.
-                        </div>
-                    </div>
-
+            <div class="section-header">
+                <div>
+                    <div class="section-title">Guest Requests</div>
+                    <div class="section-subtitle">Messages and pending actions.</div>
                 </div>
-
-                {% if bookings %}
-
-                {% for booking in bookings %}
-
-                <div class="reservation-row">
-
-                    <!-- Fill later -->
-
-                </div>
-
-                {% endfor %}
-
-                {% else %}
-
-                <div class="empty-state">
-
-                    <div class="empty-title">
-                        No reservations yet
-                    </div>
-
-                    <div class="empty-subtitle">
-                        Reservation activity will appear here.
-                    </div>
-
-                </div>
-
-                {% endif %}
-                
-
             </div>
 
-            <!-- GUEST REQUESTS -->
+            {% if requests %}
+            {% for request in requests %}
+            <div class="request-row">
+                <!-- Fill later -->
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-title">No guest requests</div>
+                <div class="empty-subtitle">Guest communication will appear here.</div>
+            </div>
+            {% endif %}
 
-            <div class="hs-card section-card">
+        </div>
 
-                
-                <div class="section-header">
+        <!-- FUTURE ANALYTICS -->
+        <div class="hs-card section-card">
 
-                    <div>
-                        <div class="section-title">
-                            Guest Requests
-                        </div>
-
-                        <div class="section-subtitle">
-                            Messages and pending actions.
-                        </div>
-                    </div>
-
+            <div class="section-header">
+                <div>
+                    <div class="section-title">Future Analytics</div>
+                    <div class="section-subtitle">Reserved for forecasting and business insights.</div>
                 </div>
-
-                {% if requests %}
-
-                {% for request in requests %}
-
-                <div class="request-row">
-
-                    <!-- Fill later -->
-
-                </div>
-
-                {% endfor %}
-
-                {% else %}
-
-                <div class="empty-state">
-
-                    <div class="empty-title">
-                        No guest requests
-                    </div>
-
-                    <div class="empty-subtitle">
-                        Guest communication will appear here.
-                    </div>
-
-                </div>
-
-                {% endif %}
-                
-
             </div>
 
-            <!-- FUTURE ANALYTICS -->
-
-            <div class="hs-card section-card">
-
-                
-                <div class="section-header">
-
-                    <div>
-                        <div class="section-title">
-                            Future Analytics
-                        </div>
-
-                        <div class="section-subtitle">
-                            Reserved for forecasting and business insights.
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="future-box">
-
-                    Occupancy trends, revenue analytics,
-                    AI forecasting and recommendations
-                    will appear here.
-
-                </div>
-                
-
+            <div class="future-box">
+                Occupancy trends, revenue analytics,
+                AI forecasting and recommendations
+                will appear here.
             </div>
 
         </div>
 
     </div>
-    
-
 </div>
+
+<!-- IMAGE UPLOAD MODAL -->
+<div class="upload-modal-bg" id="uploadModalBg">
+    <div class="upload-modal">
+        <h3>Upload Stay Image</h3>
+        <p>Choose an image for this listing.</p>
+
+        <form id="uploadForm" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="stay_id" id="uploadStayId">
+            <input type="file" name="image" accept="image/*" required>
+
+            <div class="upload-modal-actions">
+                <button type="button" class="upload-cancel-btn" onclick="closeUploadModal()">Cancel</button>
+                <button type="submit" class="upload-submit-btn">Upload</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    const uploadModalBg = document.getElementById('uploadModalBg');
+    const uploadForm = document.getElementById('uploadForm');
+    const uploadStayId = document.getElementById('uploadStayId');
+
+    function openUploadModal(stayId) {
+        uploadStayId.value = stayId;
+        uploadModalBg.classList.add('active');
+    }
+
+    function closeUploadModal() {
+        uploadModalBg.classList.remove('active');
+        uploadForm.reset();
+    }
+
+    uploadModalBg.addEventListener('click', function (e) {
+        if (e.target === uploadModalBg) closeUploadModal();
+    });
+
+    uploadForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const stayId = uploadStayId.value;
+        const formData = new FormData(uploadForm);
+
+        fetch(`/host/stays/${stayId}/upload-image/`, {
+            method: 'POST',
+            body: formData,
+            headers: { 'X-CSRFToken': formData.get('csrfmiddlewaretoken') }
+        })
+        .then(res => {
+            if (!res.ok) throw new Error('Upload failed');
+            return res.json();
+        })
+        .then(() => location.reload())
+        .catch(() => alert('Upload failed. Try again.'));
+    });
+</script>
 
 {% endblock %}

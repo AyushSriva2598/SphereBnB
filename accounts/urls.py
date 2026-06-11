@@ -13,4 +13,5 @@ urlpatterns = [
     path('verify-account-host/<token>/',views.verify_email_token_host,name='verify_email_token_host'),
     path('host-dashboard/',views.host_dashboard,name='host_dashboard'),
     path('host-add-stay/',views.host_add_stay,name='host_add_stay'),
+    path('<slug>/host-upload-stay-images/',views.host_upload_stay_images,name='host_upload_stay_images'),
 ]   
