@@ -1,20 +1,19 @@
-{% extends "utils/base.html" %}
+{% extends "utils/host/host_base.html" %}
 {% load static %}
 {% block title %}Host Dashboard — HostStay{% endblock %}
 
 {% block nav %}
-{% include "utils/nav.html" with variant="public" %}
-{% endblock %}
+{% include "utils/host/host_nav.html" with variant="public" %}{% endblock %}
 
 {% block extra_head %}
 
 <style>
     .dashboard-wrapper {
-        max-width: 1280px;
-        margin: 0 auto;
-        padding: 120px 32px 40px;
-        min-height: 100vh;
-    }
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 32px 40px;
+    min-height: 100vh;
+}
 
     .dashboard-content {
         display: flex;
@@ -135,11 +134,16 @@
         display: block;
     }
 
-    .upload-img-btn {
-        text-decoration: none;
+    .stay-image-actions {
         position: absolute;
         top: 10px;
         right: 10px;
+        display: flex;
+        gap: 8px;
+    }
+
+    .upload-img-btn {
+        text-decoration: none;
         display: flex;
         align-items: center;
         gap: 6px;
@@ -286,10 +290,31 @@
         font-weight: 600;
     }
 
+    .upload-img-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 2;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 12px;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        border-radius: 999px;
+        background: #fff;
+        color: #1a1c1c;
+        font-size: 13px;
+        font-weight: 600;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, .25);
+    }
+
     @media(max-width:768px) {
 
         .dashboard-wrapper {
-            padding: 100px 16px 24px;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 32px 40px;
         }
 
         .hero-title {
@@ -299,12 +324,30 @@
         .stay-grid {
             grid-template-columns: 1fr;
         }
+
+        .stay-image {
+            position: relative;
+            height: 220px;
+            overflow: hidden;
+        }
+
+
     }
 </style>
 
 {% endblock %}
 
 {% block content %}
+
+<!-- {% if messages %}
+<div class="messages-container">
+    {% for message in messages %}
+    <div class="message message-{{ message.tags }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %} -->
 
 <div class="dashboard-wrapper">
     <div class="dashboard-content">
@@ -321,8 +364,7 @@
             </p>
 
             <div class="hero-actions">
-                <a href="{% url 'host_add_stay' %}" class="btn-primary"
-                    style="padding:12px 18px;text-decoration:none;">
+                <a href="{% url 'host_add_stay' %}" class="btn-primary" style="padding:12px 18px;text-decoration:none;">
                     <span class="material-symbols-outlined icon-sm">add</span>
                     Add Stay
                 </a>
@@ -347,13 +389,10 @@
                     <img src="{% static 'accounts/images/default-hotel.jpg' %}" alt="Default Hotel">
                     {% endif %}
 
-                    
-                    <a href="{% url 'host_upload_stay_images' stay.hotel_slug %}" class="upload-img-btn">
-                        <span class="material-symbols-outlined icon-sm">photo_camera</span>
-                        Upload
+                    <a href="{% url 'host_edit_stay' stay.hotel_slug %}" class="upload-img-btn">
+                        <span class="material-symbols-outlined icon-sm">edit</span>
+                        Edit
                     </a>
-                   
-
                 </div>
                 {% endwith %}
 
@@ -522,12 +561,12 @@
             body: formData,
             headers: { 'X-CSRFToken': formData.get('csrfmiddlewaretoken') }
         })
-        .then(res => {
-            if (!res.ok) throw new Error('Upload failed');
-            return res.json();
-        })
-        .then(() => location.reload())
-        .catch(() => alert('Upload failed. Try again.'));
+            .then(res => {
+                if (!res.ok) throw new Error('Upload failed');
+                return res.json();
+            })
+            .then(() => location.reload())
+            .catch(() => alert('Upload failed. Try again.'));
     });
 </script>
 

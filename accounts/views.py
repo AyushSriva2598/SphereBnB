@@ -5,7 +5,7 @@ from .models import HotelUser, HotelVendor, Hotel, Ameneties, HotelImage
 from django.db.models import Q
 from .utils import generateRandomToken, sendEmailToken, sendOTPtoEmail, sendEmailTokenHost, sendOTPtoEmailHost,generateSlug
 from django.http import HttpResponse, HttpResponseRedirect
-from django.contrib.auth import authenticate,login
+from django.contrib.auth import authenticate,login, logout
 from django.contrib.auth.decorators import login_required
 import random
 
@@ -16,30 +16,36 @@ def login_view(request):
         email=request.POST.get('email')
         password=request.POST.get('password')
 
+        print("EMAIL ENTERED:", repr(email))
         hotel_user = HotelUser.objects.filter(email =email)
-
+        print("COUNT:", hotel_user.count())
+        
         if not hotel_user.exists():
             messages.warning(request, "No Account Found")
-            return redirect('/account/login/')
+            return redirect('/accounts/login/')
         
         
         if not hotel_user[0].is_verified:
             messages.warning(request,"Account not verified")
-            return redirect('/account/login/')
+            return redirect('/accounts/login/')
         
         hotel_user=authenticate(username=hotel_user[0].username, password=password)
 
         if hotel_user:
             messages.success(request,"Login Success")
             login(request, hotel_user)
-            return redirect('/account/login/')
+            return redirect('/')
         
         messages.warning(request,"Invalid Credentials")
-        return redirect('/account/login/')
+        return redirect('/accounts/login/')
 
 
 
     return render(request,'user/login.html')
+
+def logout_view(request):
+    logout(request)
+    return redirect('/accounts/login/')
 
 def register_view(request):
     if request.method == "POST":
@@ -165,6 +171,10 @@ def host_login(request):
     return render(request,"host/host_login.html")
 
 
+def host_logout(request):
+    logout(request)
+    return redirect('/accounts/host-login/')
+
 def host_register(request):
     if request.method == "POST":
         name= request.POST.get('name')
@@ -254,7 +264,7 @@ def verify_otp_host(request, email):
 
 @login_required(login_url="host_login")
 def host_dashboard(request):
-    
+
     print("CURRENT USER:", request.user)
     print("USER ID:", request.user.id)
 
@@ -270,6 +280,9 @@ def host_dashboard(request):
 @login_required(login_url="host_login")
 def host_add_stay(request):
     if request.method=="POST":
+        print(request.FILES)
+        print(request.FILES.getlist('hotel_images'))
+        print(len(request.FILES.getlist('hotel_images')))
         hotel_name= request.POST.get('hotel_name')
         hotel_description=request.POST.get('hotel_description')
         ameneties= request.POST.getlist('ameneties')
@@ -301,30 +314,89 @@ def host_add_stay(request):
         for amenety in ameneties:
             amenety= Ameneties.objects.get(id=amenety)
             hotel_obj.ameneties.add(amenety)
+        
+        images = request.FILES.getlist('hotel_images')
+
+        for image in images:
+            HotelImage.objects.create(
+                hotel=hotel_obj,
+                image=image
+            )
             hotel_obj.save()
 
         messages.success(request,"Hotel Created")
-        return redirect(f'/accounts/host-dashboard')
+        return redirect(f'/accounts/host-dashboard/')
     
     ameneties=Ameneties.objects.all()
     
     return render(request, 'host/host_add_stay.html', context={'ameneties': ameneties})
 
 
+# @login_required(login_url="host_login")
+# def host_upload_stay_images(request,slug):
+#     hotel_obj= Hotel.objects.get(hotel_slug=slug)
+#     if request.method == "POST":
+#         image=request.FILES['image']
+#         print(image)
+#         HotelImage.objects.create(
+#            hotel= hotel_obj,
+#            image=image
+#         )
+#         return HttpResponseRedirect(request.path_info)
+#     return render(request, 'host/host_upload_stay_images.html', context={
+#     "images": HotelImage.objects.filter(hotel=hotel_obj),
+#     "stay": hotel_obj
+# })
+
+
 @login_required(login_url="host_login")
-def host_upload_stay_images(request,slug):
-    hotel_obj= Hotel.objects.get(hotel_slug=slug)
+def host_delete_stay_image(request,id):
+    hotel_image= HotelImage.objects.get(id=id)
+    slug = hotel_image.hotel.hotel_slug
+    hotel_image.delete()
+    messages.success(request, "Hotel Image deleted")
+    return redirect('host_edit_stay', slug=slug)
+
+@login_required(login_url="host_login")
+def host_edit_stay(request,slug):
+    hotel_obj = Hotel.objects.get(hotel_slug=slug)
+
+    print("REQUEST USER:", request.user)
+    print("REQUEST USER ID:", request.user.id)
+
+    print("HOTEL OWNER:", hotel_obj.hotel_owner)
+    print("HOTEL OWNER ID:", hotel_obj.hotel_owner.id)
+
+    if request.user.id != hotel_obj.hotel_owner.id:
+        return HttpResponse("You are not authorised")
+    
     if request.method == "POST":
-        image=request.FILES['images']
-        print(image)
-        HotelImage.objects.create(
-           hotel= hotel_obj,
-           image=image
-        )
-        return HttpResponseRedirect(request.path_info)
-    return render(request, 'host/host_upload_stay_images.html', context={
-    "images": HotelImage.objects.filter(hotel=hotel_obj),
-    "stay": hotel_obj
-})
+        hotel_name= request.POST.get('hotel_name')
+        hotel_description=request.POST.get('hotel_description')
+        hotel_price=request.POST.get('hotel_price')
+        hotel_offer_price=request.POST.get('hotel_offer_price')
+        hotel_location=request.POST.get('hotel_location')
+        image = request.FILES.get('image')        # print(image)
+        
+        hotel_obj.hotel_name=hotel_name
+        hotel_obj.hotel_description=hotel_description
+        hotel_obj.hotel_price=hotel_price
+        hotel_obj.hotel_offer_price=hotel_offer_price
+        hotel_obj.hotel_location=hotel_location
+        hotel_obj.save()
+        if image:
+            HotelImage.objects.create(
+            hotel= hotel_obj,
+            image=image
+            )
+        messages.success(request,"Hotel Details Updated")
+        return redirect(f"/accounts/host-dashboard/")
+
+        # return HttpResponseRedirect(request.path_info)
+
+    return render(request,"host/host_edit_stay.html", context={
+        "stay": hotel_obj,
+        "images": HotelImage.objects.filter(hotel=hotel_obj)})
+
 
 

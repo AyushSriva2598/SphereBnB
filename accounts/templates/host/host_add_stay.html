@@ -1,125 +1,124 @@
-{% extends "utils/base.html" %}
+{% extends "utils/host/host_base.html" %}
 
 {% block title %}Add Stay | HostStay{% endblock %}
 
 {% block nav %}
-{% include "utils/nav.html" with variant="public" %}
+{% include "utils/host/host_nav.html" with variant="public" %}
 {% endblock %}
 
 {% block extra_head %}
 
 <style>
-
-.page-wrapper{
-    max-width:1100px;
-    margin:0 auto;
-    padding:120px 32px 40px;
-}
-
-.form-card{
-    padding:32px;
-}
-
-.page-title{
-    font-size:32px;
-    font-weight:800;
-    color:#1a1c1c;
-    margin-bottom:8px;
-    letter-spacing:-0.02em;
-}
-
-.page-subtitle{
-    color:#5f5e5e;
-    margin-bottom:32px;
-}
-
-.form-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:20px;
-}
-
-.form-group{
-    margin-bottom:20px;
-}
-
-.form-group.full{
-    grid-column:1 / -1;
-}
-
-.form-group label{
-    display:block;
-    margin-bottom:8px;
-    font-size:14px;
-    font-weight:600;
-    color:#1a1c1c;
-}
-
-.form-group input,
-.form-group textarea,
-.form-group select{
-    width:100%;
-    padding:14px 16px;
-    border:1.5px solid #e2e2e2;
-    border-radius:14px;
-    font-size:15px;
-    font-family:inherit;
-    outline:none;
-    transition:all .15s ease;
-}
-
-.form-group input:focus,
-.form-group textarea:focus,
-.form-group select:focus{
-    border-color:#ba0036;
-}
-
-.form-group textarea{
-    resize:vertical;
-    min-height:140px;
-}
-
-.selected-amenities{
-    display:flex;
-    flex-wrap:wrap;
-    gap:8px;
-    margin-top:12px;
-}
-
-.amenity-chip{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    padding:8px 12px;
-    border-radius:999px;
-    background:#f3f3f3;
-    font-size:13px;
-    font-weight:600;
-}
-
-.amenity-chip button{
-    border:none;
-    background:none;
-    cursor:pointer;
-    color:#ba0036;
-    font-size:16px;
-    padding:0;
-}
-
-.submit-wrap{
-    margin-top:10px;
-}
-
-@media(max-width:768px){
-
-    .page-wrapper{
-        padding:100px 16px 24px;
+    .page-wrapper {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 120px 32px 40px;
     }
 
-    .form-grid{
-        grid-template-columns:1fr;
+    .form-card {
+        padding: 32px;
     }
-}
+
+    .page-title {
+        font-size: 32px;
+        font-weight: 800;
+        color: #1a1c1c;
+        margin-bottom: 8px;
+        letter-spacing: -0.02em;
+    }
+
+    .page-subtitle {
+        color: #5f5e5e;
+        margin-bottom: 32px;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group.full {
+        grid-column: 1 / -1;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #1a1c1c;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        width: 100%;
+        padding: 14px 16px;
+        border: 1.5px solid #e2e2e2;
+        border-radius: 14px;
+        font-size: 15px;
+        font-family: inherit;
+        outline: none;
+        transition: all .15s ease;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+        border-color: #ba0036;
+    }
+
+    .form-group textarea {
+        resize: vertical;
+        min-height: 140px;
+    }
+
+    .selected-amenities {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 12px;
+    }
+
+    .amenity-chip {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: #f3f3f3;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .amenity-chip button {
+        border: none;
+        background: none;
+        cursor: pointer;
+        color: #ba0036;
+        font-size: 16px;
+        padding: 0;
+    }
+
+    .submit-wrap {
+        margin-top: 10px;
+    }
+
+    @media(max-width:768px) {
+
+        .page-wrapper {
+            padding: 100px 16px 24px;
+        }
+
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+    }
 </style>
 
 {% endblock %}
@@ -129,122 +128,97 @@
 <div class="page-wrapper">
 
 
-<div class="hs-card form-card">
+    <div class="hs-card form-card">
 
-    <h1 class="page-title">
-        Add Stay
-    </h1>
+        <h1 class="page-title">
+            Add Stay
+        </h1>
 
-    <p class="page-subtitle">
-        Create a new stay listing for your guests.
-    </p>
+        <p class="page-subtitle">
+            Create a new stay listing for your guests.
+        </p>
 
-    <form method="POST" enctype="multipart/form-data">
+        <form method="POST" enctype="multipart/form-data">
 
-        {% csrf_token %}
+            {% csrf_token %}
 
-        <div class="form-grid">
+            <div class="form-grid">
 
-            <div class="form-group full">
-                <label>Stay Name</label>
-                <input
-                    type="text"
-                    name="hotel_name"
-                    placeholder="Enter stay name"
-                    required>
-            </div>
+                <div class="form-group full">
+                    <label>Stay Name</label>
+                    <input type="text" name="hotel_name" placeholder="Enter stay name" required>
+                </div>
 
-            <div class="form-group">
-                <label>Regular Price</label>
-                <input
-                    type="number"
-                    name="hotel_price"
-                    placeholder="3000"
-                    required>
-            </div>
+                <div class="form-group">
+                    <label>Regular Price</label>
+                    <input type="number" name="hotel_price" placeholder="3000" required>
+                </div>
 
-            <div class="form-group">
-                <label>Offer Price</label>
-                <input
-                    type="number"
-                    name="hotel_offer_price"
-                    placeholder="2500">
-            </div>
+                <div class="form-group">
+                    <label>Offer Price</label>
+                    <input type="number" name="hotel_offer_price" placeholder="2500">
+                </div>
 
-            <div class="form-group full">
-                <label>Location</label>
-                <input
-                    type="text"
-                    name="hotel_location"
-                    placeholder="Varanasi, Uttar Pradesh"
-                    required>
-            </div>
+                <div class="form-group full">
+                    <label>Location</label>
+                    <input type="text" name="hotel_location" placeholder="Varanasi, Uttar Pradesh" required>
+                </div>
 
-            <div class="form-group full">
-                <label>Description</label>
+                <div class="form-group full">
+                    <label>Description</label>
 
-                <textarea
-                    name="hotel_description"
-                    placeholder="Describe your stay..."
-                    required></textarea>
-            </div>
+                    <textarea name="hotel_description" placeholder="Describe your stay..." required></textarea>
+                </div>
 
-            <div class="form-group full">
-                <label>Hotel Image</label>
+                <div class="form-group full">
+                    <label>Hotel Image</label>
 
-                <input
-                    type="file"
-                    name="hotel_image">
-            </div>
+                    <input type="file" name="hotel_images" multiple accept="image/*">
+                </div>
 
-            <div class="form-group full">
+                <div class="form-group full">
 
-                <label>Select Amenities</label>
+                    <label>Select Amenities</label>
 
-                <select id="amenity-select">
+                    <select id="amenity-select">
 
-                    <option value="">
-                        Select Amenity
-                    </option>
+                        <option value="">
+                            Select Amenity
+                        </option>
 
-                    {% for amenity in ameneties %}
+                        {% for amenity in ameneties %}
                         <option value="{{ amenity.id }}">
                             {{ amenity.name }}
                         </option>
-                    {% endfor %}
+                        {% endfor %}
 
-                </select>
+                    </select>
 
-                <div
-                    id="selected-amenities"
-                    class="selected-amenities">
+                    <div id="selected-amenities" class="selected-amenities">
+
+                    </div>
 
                 </div>
 
             </div>
 
-        </div>
+            <div class="submit-wrap">
 
-        <div class="submit-wrap">
+                <button type="submit" class="btn-primary" style="padding:12px 20px;">
 
-            <button
-                type="submit"
-                class="btn-primary"
-                style="padding:12px 20px;">
+                    <span class="material-symbols-outlined icon-sm">
+                        add
+                    </span>
 
-                <span class="material-symbols-outlined icon-sm">
-                    add
-                </span>
+                    Create Stay
 
-                Create Stay
+                </button>
 
-            </button>
+            </div>
 
-        </div>
+        </form>
 
-    </form>
-
-</div>
+    </div>
 
 
 </div>
@@ -255,35 +229,35 @@
 
 <script>
 
-const amenitySelect =
-    document.getElementById("amenity-select");
+    const amenitySelect =
+        document.getElementById("amenity-select");
 
-const selectedContainer =
-    document.getElementById("selected-amenities");
+    const selectedContainer =
+        document.getElementById("selected-amenities");
 
-amenitySelect.addEventListener("change", function(){
+    amenitySelect.addEventListener("change", function () {
 
-    if(!this.value){
-        return;
-    }
+        if (!this.value) {
+            return;
+        }
 
-    if(
-        document.getElementById(
-            `amenity-${this.value}`
-        )
-    ){
-        return;
-    }
+        if (
+            document.getElementById(
+                `amenity-${this.value}`
+            )
+        ) {
+            return;
+        }
 
-    const chip =
-        document.createElement("div");
+        const chip =
+            document.createElement("div");
 
-    chip.className = "amenity-chip";
+        chip.className = "amenity-chip";
 
-    chip.id =
-        `amenity-${this.value}`;
+        chip.id =
+            `amenity-${this.value}`;
 
-    chip.innerHTML = `
+        chip.innerHTML = `
         <span>
             ${this.options[this.selectedIndex].text}
         </span>
@@ -299,19 +273,19 @@ amenitySelect.addEventListener("change", function(){
         </button>
     `;
 
-    chip
-    .querySelector("button")
-    .addEventListener(
-        "click",
-        function(){
-            chip.remove();
-        }
-    );
+        chip
+            .querySelector("button")
+            .addEventListener(
+                "click",
+                function () {
+                    chip.remove();
+                }
+            );
 
-    selectedContainer.appendChild(chip);
+        selectedContainer.appendChild(chip);
 
-    this.selectedIndex = 0;
-});
+        this.selectedIndex = 0;
+    });
 
 </script>
 

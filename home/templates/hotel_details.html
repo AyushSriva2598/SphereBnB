@@ -1,0 +1,350 @@
+{% extends "utils/base.html" %}
+{% load static %}
+
+{% block title %}
+{{ hotel.hotel_name }}
+{% endblock %}
+
+{% block nav %}
+{% include "utils/nav.html" with variant="public" %}
+{% endblock %}
+
+{% block extra_head %}
+
+<style>
+
+.details-wrapper{
+    max-width:1280px;
+    margin:0 auto;
+    padding:110px 32px 50px;
+}
+
+.hotel-header{
+    margin-bottom:20px;
+}
+
+.hotel-title{
+    font-size:32px;
+    font-weight:800;
+    color:#1a1c1c;
+    margin-bottom:4px;
+    line-height:1.15;
+}
+
+.hotel-location{
+    font-size:14px;
+    color:#6b6b6b;
+}
+
+.hotel-gallery{
+    display:grid;
+    grid-template-columns:1.8fr 1fr;
+    gap:12px;
+    margin-bottom:28px;
+}
+
+.gallery-main img{
+    width:100%;
+    height:280px;
+    object-fit:cover;
+    border-radius:16px;
+    display:block;
+}
+
+.gallery-side{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:12px;
+}
+
+.gallery-side img{
+    width:100%;
+    height:134px;
+    object-fit:cover;
+    border-radius:16px;
+    display:block;
+}
+
+.details-layout{
+    display:grid;
+    grid-template-columns:1fr 300px;
+    gap:28px;
+    align-items:start;
+}
+
+.details-left{
+    min-width:0;
+}
+
+.section-title{
+    font-size:22px;
+    font-weight:700;
+    color:#1a1c1c;
+    margin-bottom:14px;
+}
+
+.hotel-description{
+    font-size:15px;
+    line-height:1.8;
+    color:#4b4b4b;
+    margin-bottom:32px;
+}
+
+.amenities-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+}
+
+.amenity-item{
+    padding:14px;
+    border:1px solid #ececec;
+    border-radius:12px;
+    background:#fafafa;
+    font-weight:600;
+    text-align:center;
+    font-size:14px;
+}
+
+.booking-card{
+    position:sticky;
+    top:100px;
+    background:#fff;
+    border:1px solid #e5e5e5;
+    border-radius:18px;
+    padding:20px;
+    box-shadow:0 8px 24px rgba(0,0,0,.06);
+}
+
+.price{
+    font-size:28px;
+    font-weight:800;
+    color:#ba0036;
+    margin-bottom:4px;
+}
+
+.price span{
+    font-size:14px;
+    color:#666;
+    font-weight:500;
+}
+
+.booking-note{
+    font-size:13px;
+    color:#777;
+    margin-bottom:18px;
+}
+
+.reserve-btn{
+    width:100%;
+    border:none;
+    border-radius:12px;
+    padding:14px;
+    background:#ba0036;
+    color:#fff;
+    font-size:14px;
+    font-weight:700;
+    cursor:pointer;
+    transition:.15s;
+}
+
+.reserve-btn:hover{
+    opacity:.92;
+}
+
+.info-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:10px;
+    margin-top:14px;
+    padding-top:14px;
+    border-top:1px solid #ececec;
+}
+
+.info-label{
+    color:#666;
+    font-size:13px;
+}
+
+.info-value{
+    font-size:13px;
+    font-weight:700;
+    text-align:right;
+    word-break:break-word;
+}
+
+@media(max-width:1024px){
+
+    .hotel-gallery{
+        grid-template-columns:1fr;
+    }
+
+    .gallery-main img{
+        height:240px;
+    }
+
+    .gallery-side{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .gallery-side img{
+        height:120px;
+    }
+
+    .details-layout{
+        grid-template-columns:1fr;
+    }
+
+    .booking-card{
+        position:static;
+    }
+
+    .amenities-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media(max-width:768px){
+
+    .details-wrapper{
+        padding:100px 16px 40px;
+    }
+
+    .hotel-title{
+        font-size:26px;
+    }
+
+    .gallery-main img{
+        height:200px;
+    }
+
+    .gallery-side img{
+        height:100px;
+    }
+
+    .amenities-grid{
+        grid-template-columns:1fr;
+    }
+}
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="details-wrapper">
+
+    <div class="hotel-header">
+
+        <h1 class="hotel-title">
+            {{ hotel.hotel_name }}
+        </h1>
+
+        <div class="hotel-location">
+            {{ hotel.hotel_location }}
+        </div>
+
+    </div>
+
+    {% with images=hotel.hotel_images.all %}
+
+    <div class="hotel-gallery">
+
+        <div class="gallery-main">
+
+            {% if images %}
+                <img src="{{ images.0.image.url }}" alt="{{ hotel.hotel_name }}">
+            {% endif %}
+
+        </div>
+
+        <div class="gallery-side">
+
+            {% for image in images|slice:"1:5" %}
+                <img src="{{ image.image.url }}" alt="{{ hotel.hotel_name }}">
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    {% endwith %}
+
+    <div class="details-layout">
+
+        <div class="details-left">
+
+            <h2 class="section-title">
+                About this stay
+            </h2>
+
+            <div class="hotel-description">
+                {{ hotel.hotel_description }}
+            </div>
+
+            <h2 class="section-title">
+                Amenities
+            </h2>
+
+            <div class="amenities-grid">
+
+                {% for amenity in hotel.ameneties.all %}
+
+                    <div class="amenity-item">
+                        {{ amenity.name }}
+                    </div>
+
+                {% empty %}
+
+                    <div class="amenity-item">
+                        No amenities listed
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        <div class="details-right">
+
+            <div class="booking-card">
+
+                <div class="price">
+                    ₹{{ hotel.hotel_offer_price }}
+                    <span>/ night</span>
+                </div>
+
+                <div class="booking-note">
+                    Best available rate
+                </div>
+
+                <button class="reserve-btn">
+                    Reserve Now
+                </button>
+
+                <div class="info-row">
+                    <span class="info-label">Regular Price</span>
+                    <span class="info-value">₹{{ hotel.hotel_price }}</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-label">Discounted Price</span>
+                    <span class="info-value">₹{{ hotel.hotel_offer_price }}</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-label">Property</span>
+                    <span class="info-value">{{ hotel.hotel_name }}</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,227 @@
+{% extends "utils/base.html" %}
+{% load static %}
+
+{% block title %}HostStay{% endblock %}
+
+{% block nav %}
+{% include "utils/nav.html" with variant="public" %}
+{% endblock %}
+
+{% block extra_head %}
+<style>
+    .hotel-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 24px;
+    }
+
+    .hotel-card {
+        background: #fff;
+        border-radius: 18px;
+        overflow: hidden;
+        border: 1px solid #e5e5e5;
+        transition: .2s;
+    }
+
+    .hotel-card:hover {
+        transform: translateY(-4px);
+    }
+
+    .hotel-image {
+        width: 100%;
+        height: 220px;
+        overflow: hidden;
+    }
+
+    .hotel-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .hotel-content {
+        padding: 18px;
+    }
+
+    .hotel-name {
+        font-size: 18px;
+        font-weight: 700;
+        color: #1a1c1c;
+        margin-bottom: 8px;
+    }
+
+    .hotel-location {
+        font-size: 14px;
+        color: #5f5e5e;
+        margin-bottom: 12px;
+    }
+
+    .hotel-price {
+        font-size: 18px;
+        font-weight: 800;
+        color: #ba0036;
+    }
+
+    .hotel-price span {
+        font-size: 14px;
+        color: #5f5e5e;
+        font-weight: 500;
+    }
+
+    .search-wrapper {
+        max-width: 1280px;
+        margin: 110px auto 20px;
+        padding: 0 32px;
+    }
+
+    .search-form {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .search-form input,
+    .search-form select {
+        padding: 14px;
+        border: 1px solid #ddd;
+        border-radius: 12px;
+        font-size: 14px;
+        outline: none;
+    }
+
+    .search-form button {
+        border: none;
+        cursor: pointer;
+        padding: 0 24px;
+    }
+
+    .hotel-grid {
+        padding: 0 32px 40px;
+    }
+
+    @media(max-width:900px) {
+
+        .search-form {
+            grid-template-columns: 1fr;
+        }
+
+    }
+
+    .btn-clear {
+        padding: 14px 24px;
+        border-radius: 12px;
+        background: #f3f3f3;
+        color: #1a1c1c;
+        text-decoration: none;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 120px;
+    }
+
+    .filter-actions {
+        display: flex;
+        gap: 12px;
+    }
+
+    .hotel-card-link {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+    }
+
+    .hotel-card {
+        cursor: pointer;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="search-wrapper">
+
+    <form method="GET" class="search-form">
+
+        <input type="text" name="search" placeholder="Search hotels or location..." value="{{ search|default:'' }}">
+
+        <input type="number" name="min_price" placeholder="Min Price" value="{{ min_price|default:'' }}">
+
+        <input type="number" name="max_price" placeholder="Max Price" value="{{ max_price|default:'' }}">
+
+        <select name="amenity">
+            <option value="">All Amenities</option>
+
+            {% for amenity in amenities %}
+            <option value="{{ amenity.id }}">
+                {{ amenity.name }}
+            </option>
+            {% endfor %}
+        </select>
+
+        <div class="filter-actions">
+            <button type="submit" class="btn-primary">
+                Search
+            </button>
+
+            <a href="{% url 'index' %}" class="btn-clear">
+                Clear
+            </a>
+        </div>
+
+    </form>
+
+</div>
+
+<div class="hotel-grid">
+
+    {% for hotel in hotels %}
+
+    <a href="{% url 'hotel_details' hotel.hotel_slug %}" class="hotel-card-link">
+
+        <div class="hotel-card">
+
+            {% with image=hotel.hotel_images.first %}
+
+            <div class="hotel-image">
+
+                {% if image %}
+                <img src="{{ image.image.url }}" alt="{{ hotel.hotel_name }}">
+                {% else %}
+                <img src="{% static 'accounts/images/default-hotel.jpg' %}" alt="Hotel">
+                {% endif %}
+
+            </div>
+
+            {% endwith %}
+
+            <div class="hotel-content">
+
+                <div class="hotel-name">
+                    {{ hotel.hotel_name }}
+                </div>
+
+                <div class="hotel-location">
+                    {{ hotel.hotel_location }}
+                </div>
+
+                <div class="hotel-price">
+                    ₹{{ hotel.hotel_offer_price }}
+                    <span>/ night</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </a>
+
+    {% empty %}
+
+    <h2>No hotels found</h2>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}

@@ -26,13 +26,23 @@
     </div>
 
     <!-- Right actions -->
+    <!-- Right actions -->
     <div style="display:flex; align-items:center; gap:8px;">
-        <a href="#" class="pub-nav-link">Become a host</a>
-        <a href="/login/" class="btn-primary" style="padding:10px 20px; border-radius:99px; font-size:13px; text-decoration:none;">
+        <a href="{% url 'host_register' %}" class="pub-nav-link">Become a host</a>
 
+        {% if user.is_authenticated %}
+        <a href="{% url 'host_logout' %}" class="btn-primary"
+            style="padding:10px 20px; border-radius:99px; font-size:13px; text-decoration:none;">
+            <span class="material-symbols-outlined icon-sm">logout</span>
+            Log out
+        </a>
+        {% elif request.resolver_match.url_name != 'host_login' %}
+        <a href="{% url 'login_view' %}" class="btn-primary"
+            style="padding:10px 20px; border-radius:99px; font-size:13px; text-decoration:none;">
             <span class="material-symbols-outlined icon-sm">account_circle</span>
             Log in
         </a>
+        {% endif %}
     </div>
 </nav>
 

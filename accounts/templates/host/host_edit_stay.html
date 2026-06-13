@@ -1,0 +1,324 @@
+{% extends "utils/host/host_base.html" %}
+{% load static %}
+{% block title %}Edit Stay — HostStay{% endblock %}
+
+{% block nav %}
+{% include "utils/host/host_nav.html" with variant="public" %}{% endblock %}
+
+{% block extra_head %}
+
+<style>
+    .upload-wrapper {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 120px 32px 40px;
+        min-height: 100vh;
+    }
+
+    .upload-card {
+        padding: 32px;
+    }
+
+    .upload-title {
+        font-size: 28px;
+        font-weight: 800;
+        color: #1a1c1c;
+        margin-bottom: 6px;
+    }
+
+    .upload-subtitle {
+        font-size: 14px;
+        color: #5f5e5e;
+        margin-bottom: 24px;
+    }
+
+    .form-group {
+        margin-bottom: 18px;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 13px;
+        font-weight: 700;
+        color: #1a1c1c;
+        margin-bottom: 6px;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid #d8d8d8;
+        border-radius: 10px;
+        font-size: 14px;
+        font-family: inherit;
+        color: #1a1c1c;
+    }
+
+    .form-group textarea {
+        resize: vertical;
+        min-height: 90px;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+
+    .section-divider {
+        border: none;
+        border-top: 1px solid #ececec;
+        margin: 28px 0;
+    }
+
+    .file-input-wrap {
+        border: 2px dashed #d8d8d8;
+        border-radius: 14px;
+        padding: 40px 24px;
+        text-align: center;
+    }
+
+    .file-input-wrap input[type="file"] {
+        font-size: 14px;
+    }
+
+    .upload-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 28px;
+    }
+
+    .uploaded-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: #1a1c1c;
+        margin-top: 28px;
+        margin-bottom: 4px;
+    }
+
+    /* NEW (unsaved) image preview */
+    .new-preview-wrap {
+        margin-top: 14px;
+        display: none;
+    }
+
+    .new-preview-wrap.active {
+        display: block;
+    }
+
+    .new-preview-item {
+        position: relative;
+        width: 140px;
+        aspect-ratio: 1 / 1;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #f3f3f3;
+    }
+
+    .new-preview-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .new-preview-remove {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        width: 26px;
+        height: 26px;
+        border: none;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, .55);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 16px;
+        padding: 0;
+    }
+
+    /* Previously uploaded images */
+    .uploaded-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 14px;
+        margin-top: 14px;
+    }
+
+    .uploaded-item {
+        position: relative;
+        aspect-ratio: 1 / 1;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #f3f3f3;
+    }
+
+    .uploaded-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .uploaded-delete-btn {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        width: 28px;
+        height: 28px;
+        border: none;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, .55);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 18px;
+        padding: 0;
+    }
+
+    .btn-secondary-outline {
+        padding: 12px 18px;
+        border-radius: 999px;
+        border: 1px solid #d8d8d8;
+        background: #fff;
+        color: #1a1c1c;
+        font-weight: 600;
+        font-size: 14px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    @media(max-width:768px) {
+        .upload-wrapper {
+            padding: 100px 16px 24px;
+        }
+
+        .upload-title {
+            font-size: 22px;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="upload-wrapper">
+
+    <div class="hs-card upload-card">
+
+        <h1 class="upload-title">Edit Stay</h1>
+        <p class="upload-subtitle">Update details and manage photos for "{{ stay.hotel_name }}".</p>
+
+        <!-- DETAILS + ADD IMAGE FORM -->
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="form_type" value="details">
+
+            <div class="form-group">
+                <label for="hotel_name">Hotel Name</label>
+                <input type="text" id="hotel_name" name="hotel_name" value="{{ stay.hotel_name }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="hotel_location">Location</label>
+                <input type="text" id="hotel_location" name="hotel_location" value="{{ stay.hotel_location }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="hotel_description">Description</label>
+                <textarea id="hotel_description" name="hotel_description" required>{{ stay.hotel_description }}</textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="hotel_price">Price (₹)</label>
+                    <input type="number" id="hotel_price" name="hotel_price" value="{{ stay.hotel_price }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="hotel_offer_price">Offer Price (₹)</label>
+                    <input type="number" id="hotel_offer_price" name="hotel_offer_price" value="{{ stay.hotel_offer_price|default_if_none:'' }}">
+                </div>
+            </div>
+
+            <hr class="section-divider">
+
+            <!-- ADD IMAGE -->
+            <div class="uploaded-title" style="margin-top:0;">Add a Photo</div>
+
+            <div class="file-input-wrap">
+                <input type="file" id="newImageInput" name="image" accept="image/*">
+            </div>
+
+            <div class="new-preview-wrap" id="newPreviewWrap">
+                <div class="new-preview-item">
+                    <img id="newPreviewImg" src="" alt="">
+                    <button type="button" class="new-preview-remove" id="newPreviewRemove" title="Remove">&times;</button>
+                </div>
+            </div>
+
+            <div class="upload-actions">
+                <a href="{% url 'host_dashboard' %}" class="btn-secondary-outline">Cancel</a>
+                <button type="submit" class="btn-primary" style="padding:12px 18px;">Save Changes</button>
+            </div>
+
+        </form>
+
+        <!-- PREVIOUSLY UPLOADED IMAGES -->
+        {% if images %}
+        <hr class="section-divider">
+        <div class="uploaded-title" style="margin-top:0;">Uploaded Images</div>
+        <div class="uploaded-grid">
+            {% for image in images %}
+            <div class="uploaded-item">
+                <img src="{{ image.image.url }}" alt="">
+
+                <form method="post" action="{% url 'host_delete_stay_image' image.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="uploaded-delete-btn" title="Delete photo">&times;</button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+    </div>
+
+</div>
+
+<script>
+    const newImageInput = document.getElementById('newImageInput');
+    const newPreviewWrap = document.getElementById('newPreviewWrap');
+    const newPreviewImg = document.getElementById('newPreviewImg');
+    const newPreviewRemove = document.getElementById('newPreviewRemove');
+
+    newImageInput.addEventListener('change', () => {
+        const file = newImageInput.files[0];
+        if (!file) {
+            newPreviewWrap.classList.remove('active');
+            return;
+        }
+        newPreviewImg.src = URL.createObjectURL(file);
+        newPreviewWrap.classList.add('active');
+    });
+
+    newPreviewRemove.addEventListener('click', () => {
+        newImageInput.value = '';
+        newPreviewWrap.classList.remove('active');
+    });
+</script>
+
+{% endblock %}

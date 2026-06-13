@@ -1,10 +1,9 @@
-{% extends "utils/base.html" %}
+{% extends "utils/host/host_base.html" %}
 {% load static %}
 {% block title %}Upload Images — HostStay{% endblock %}
 
 {% block nav %}
-{% include "utils/nav.html" with variant="public" %}
-{% endblock %}
+{% include "utils/host/host_nav.html" with variant="public" %}{% endblock %}
 
 {% block extra_head %}
 
@@ -59,6 +58,7 @@
     }
 
     .uploaded-item {
+        position: relative;
         aspect-ratio: 1 / 1;
         border-radius: 12px;
         overflow: hidden;
@@ -70,6 +70,24 @@
         height: 100%;
         object-fit: cover;
         display: block;
+    }
+
+    .uploaded-delete-btn {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        width: 28px;
+        height: 28px;
+        border: none;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, .55);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 18px;
+        padding: 0;
     }
 
     .uploaded-title {
@@ -115,11 +133,11 @@
         <h1 class="upload-title">Upload Stay Images</h1>
         <p class="upload-subtitle">Select multiple images to upload.</p>
 
-        <form method="post" enctype="multipart/form-data" action="{% url 'host_upload_stay_images' stay.hotel_slug %}">
+        <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
 
             <div class="file-input-wrap">
-                <input type="file" name="images" accept="image/*" multiple required>
+                <input type="file" name="image" accept="image/*" required>
             </div>
 
             <div class="upload-actions">
@@ -135,6 +153,11 @@
             {% for image in images %}
             <div class="uploaded-item">
                 <img src="{{ image.image.url }}" alt="">
+
+                <form method="post" action="{% url 'host_delete_stay_image' image.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="uploaded-delete-btn" title="Delete photo">&times;</button>
+                </form>
             </div>
             {% endfor %}
         </div>
