@@ -125,8 +125,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # postgres
 # PuoGtlPRmAWyStWfyzrQqBDHQbOlCHlH
 # railway
-
-ALLOWED_HOSTS=spherebnb.up.railway.app
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
 
 CSRF_TRUSTED_ORIGINS = [
     'https://spherebnb.up.railway.app',
