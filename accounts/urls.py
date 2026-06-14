@@ -18,4 +18,4 @@ urlpatterns = [
     # path('<slug>/host-upload-stay-images/',views.host_upload_stay_images,name='host_upload_stay_images'),
     path('delete-stay-image/<id>/',views.host_delete_stay_image,name='host_delete_stay_image'),
     path('<slug>/host-edit-stay/',views.host_edit_stay,name='host_edit_stay'),
-]   
+]

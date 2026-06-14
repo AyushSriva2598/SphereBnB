@@ -12,221 +12,303 @@
 {% block extra_head %}
 
 <style>
-
-.details-wrapper{
-    max-width:1280px;
-    margin:0 auto;
-    padding:110px 32px 50px;
-}
-
-.hotel-header{
-    margin-bottom:20px;
-}
-
-.hotel-title{
-    font-size:32px;
-    font-weight:800;
-    color:#1a1c1c;
-    margin-bottom:4px;
-    line-height:1.15;
-}
-
-.hotel-location{
-    font-size:14px;
-    color:#6b6b6b;
-}
-
-.hotel-gallery{
-    display:grid;
-    grid-template-columns:1.8fr 1fr;
-    gap:12px;
-    margin-bottom:28px;
-}
-
-.gallery-main img{
-    width:100%;
-    height:280px;
-    object-fit:cover;
-    border-radius:16px;
-    display:block;
-}
-
-.gallery-side{
-    display:grid;
-    grid-template-columns:1fr;
-    gap:12px;
-}
-
-.gallery-side img{
-    width:100%;
-    height:134px;
-    object-fit:cover;
-    border-radius:16px;
-    display:block;
-}
-
-.details-layout{
-    display:grid;
-    grid-template-columns:1fr 300px;
-    gap:28px;
-    align-items:start;
-}
-
-.details-left{
-    min-width:0;
-}
-
-.section-title{
-    font-size:22px;
-    font-weight:700;
-    color:#1a1c1c;
-    margin-bottom:14px;
-}
-
-.hotel-description{
-    font-size:15px;
-    line-height:1.8;
-    color:#4b4b4b;
-    margin-bottom:32px;
-}
-
-.amenities-grid{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:12px;
-}
-
-.amenity-item{
-    padding:14px;
-    border:1px solid #ececec;
-    border-radius:12px;
-    background:#fafafa;
-    font-weight:600;
-    text-align:center;
-    font-size:14px;
-}
-
-.booking-card{
-    position:sticky;
-    top:100px;
-    background:#fff;
-    border:1px solid #e5e5e5;
-    border-radius:18px;
-    padding:20px;
-    box-shadow:0 8px 24px rgba(0,0,0,.06);
-}
-
-.price{
-    font-size:28px;
-    font-weight:800;
-    color:#ba0036;
-    margin-bottom:4px;
-}
-
-.price span{
-    font-size:14px;
-    color:#666;
-    font-weight:500;
-}
-
-.booking-note{
-    font-size:13px;
-    color:#777;
-    margin-bottom:18px;
-}
-
-.reserve-btn{
-    width:100%;
-    border:none;
-    border-radius:12px;
-    padding:14px;
-    background:#ba0036;
-    color:#fff;
-    font-size:14px;
-    font-weight:700;
-    cursor:pointer;
-    transition:.15s;
-}
-
-.reserve-btn:hover{
-    opacity:.92;
-}
-
-.info-row{
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-start;
-    gap:10px;
-    margin-top:14px;
-    padding-top:14px;
-    border-top:1px solid #ececec;
-}
-
-.info-label{
-    color:#666;
-    font-size:13px;
-}
-
-.info-value{
-    font-size:13px;
-    font-weight:700;
-    text-align:right;
-    word-break:break-word;
-}
-
-@media(max-width:1024px){
-
-    .hotel-gallery{
-        grid-template-columns:1fr;
+    .details-wrapper {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 110px 32px 50px;
     }
 
-    .gallery-main img{
-        height:240px;
+    .hotel-header {
+        margin-bottom: 20px;
     }
 
-    .gallery-side{
-        grid-template-columns:repeat(2,1fr);
+    .hotel-title {
+        font-size: 32px;
+        font-weight: 800;
+        color: #1a1c1c;
+        margin-bottom: 4px;
+        line-height: 1.15;
     }
 
-    .gallery-side img{
-        height:120px;
+    .hotel-location {
+        font-size: 14px;
+        color: #6b6b6b;
     }
 
-    .details-layout{
-        grid-template-columns:1fr;
+    .hotel-gallery {
+        display: grid;
+        grid-template-columns: 1.8fr 1fr;
+        gap: 12px;
+        margin-bottom: 28px;
     }
 
-    .booking-card{
-        position:static;
+    .gallery-main img {
+        width: 100%;
+        height: 280px;
+        object-fit: cover;
+        border-radius: 16px;
+        display: block;
     }
 
-    .amenities-grid{
-        grid-template-columns:repeat(2,1fr);
-    }
-}
-
-@media(max-width:768px){
-
-    .details-wrapper{
-        padding:100px 16px 40px;
+    .gallery-side {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
     }
 
-    .hotel-title{
-        font-size:26px;
+    .gallery-side img {
+        width: 100%;
+        height: 134px;
+        object-fit: cover;
+        border-radius: 16px;
+        display: block;
     }
 
-    .gallery-main img{
-        height:200px;
+    .details-layout {
+        display: grid;
+        grid-template-columns: 1fr 300px;
+        gap: 28px;
+        align-items: start;
     }
 
-    .gallery-side img{
-        height:100px;
+    .details-left {
+        min-width: 0;
     }
 
-    .amenities-grid{
-        grid-template-columns:1fr;
+    .section-title {
+        font-size: 22px;
+        font-weight: 700;
+        color: #1a1c1c;
+        margin-bottom: 14px;
     }
-}
+
+    .hotel-description {
+        font-size: 15px;
+        line-height: 1.8;
+        color: #4b4b4b;
+        margin-bottom: 32px;
+    }
+
+    .amenities-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-bottom: 32px;
+    }
+
+    .amenity-item {
+        padding: 14px;
+        border: 1px solid #ececec;
+        border-radius: 12px;
+        background: #fafafa;
+        font-weight: 600;
+        text-align: center;
+        font-size: 14px;
+    }
+
+    /* HOST INFO */
+    .host-card {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 18px;
+        border: 1px solid #ececec;
+        border-radius: 14px;
+        background: #fafafa;
+        margin-bottom: 32px;
+    }
+
+    .host-avatar {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        overflow: hidden;
+        background: #e2e2e2;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .host-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .host-avatar-fallback {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(186, 0, 54, .1);
+        color: #ba0036;
+        font-weight: 700;
+        font-size: 20px;
+    }
+
+    .host-info {
+        min-width: 0;
+    }
+
+    .host-name {
+        font-size: 15px;
+        font-weight: 700;
+        color: #1a1c1c;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .host-business {
+        font-size: 13px;
+        color: #6b6b6b;
+        margin-top: 2px;
+    }
+
+    .host-verified {
+        display: inline-flex;
+        align-items: center;
+        gap: 2px;
+        font-size: 12px;
+        font-weight: 700;
+        color: #1e7d1e;
+    }
+
+    .booking-card {
+        position: sticky;
+        top: 100px;
+        background: #fff;
+        border: 1px solid #e5e5e5;
+        border-radius: 18px;
+        padding: 20px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, .06);
+    }
+
+    .price {
+        font-size: 28px;
+        font-weight: 800;
+        color: #ba0036;
+        margin-bottom: 4px;
+    }
+
+    .price span {
+        font-size: 14px;
+        color: #666;
+        font-weight: 500;
+    }
+
+    .booking-note {
+        font-size: 13px;
+        color: #777;
+        margin-bottom: 18px;
+    }
+
+    .reserve-btn {
+        width: 100%;
+        border: none;
+        border-radius: 12px;
+        padding: 14px;
+        background: #ba0036;
+        color: #fff;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: .15s;
+        text-decoration: none;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .reserve-btn:hover {
+        opacity: .92;
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 10px;
+        margin-top: 14px;
+        padding-top: 14px;
+        border-top: 1px solid #ececec;
+    }
+
+    .info-label {
+        color: #666;
+        font-size: 13px;
+    }
+
+    .info-value {
+        font-size: 13px;
+        font-weight: 700;
+        text-align: right;
+        word-break: break-word;
+    }
+
+    @media(max-width:1024px) {
+
+        .hotel-gallery {
+            grid-template-columns: 1fr;
+        }
+
+        .gallery-main img {
+            height: 240px;
+        }
+
+        .gallery-side {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .gallery-side img {
+            height: 120px;
+        }
+
+        .details-layout {
+            grid-template-columns: 1fr;
+        }
+
+        .booking-card {
+            position: static;
+        }
+
+        .amenities-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media(max-width:768px) {
+
+        .details-wrapper {
+            padding: 100px 16px 40px;
+        }
+
+        .hotel-title {
+            font-size: 26px;
+        }
+
+        .gallery-main img {
+            height: 200px;
+        }
+
+        .gallery-side img {
+            height: 100px;
+        }
+
+        .amenities-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .host-card {
+            flex-direction: column;
+            align-items: flex-start;
+            text-align: left;
+        }
+    }
 </style>
 
 {% endblock %}
@@ -254,7 +336,7 @@
         <div class="gallery-main">
 
             {% if images %}
-                <img src="{{ images.0.image.url }}" alt="{{ hotel.hotel_name }}">
+            <img src="{{ images.0.image.url }}" alt="{{ hotel.hotel_name }}">
             {% endif %}
 
         </div>
@@ -262,7 +344,7 @@
         <div class="gallery-side">
 
             {% for image in images|slice:"1:5" %}
-                <img src="{{ image.image.url }}" alt="{{ hotel.hotel_name }}">
+            <img src="{{ image.image.url }}" alt="{{ hotel.hotel_name }}">
             {% endfor %}
 
         </div>
@@ -291,17 +373,54 @@
 
                 {% for amenity in hotel.ameneties.all %}
 
-                    <div class="amenity-item">
-                        {{ amenity.name }}
-                    </div>
+                <div class="amenity-item">
+                    {{ amenity.name }}
+                </div>
 
                 {% empty %}
 
-                    <div class="amenity-item">
-                        No amenities listed
-                    </div>
+                <div class="amenity-item">
+                    No amenities listed
+                </div>
 
                 {% endfor %}
+
+            </div>
+
+            <h2 class="section-title">
+                Hosted by
+            </h2>
+
+            <div class="host-card">
+
+                <div class="host-avatar">
+                    {% if hotel.hotel_owner.profile_picture %}
+                    <img src="{{ hotel.hotel_owner.profile_picture.url }}" alt="{{ hotel.hotel_owner.business_name }}">
+                    {% else %}
+                    <div class="host-avatar-fallback">
+                        {{ hotel.hotel_owner.first_name|first|upper }}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="host-info">
+
+                    <div class="host-name">
+                        {{ hotel.hotel_owner.first_name }} {{ hotel.hotel_owner.last_name }}
+
+                        {% if hotel.hotel_owner.is_verified %}
+                        <span class="host-verified">
+                            <span class="material-symbols-outlined icon-sm">verified</span>
+                            Verified
+                        </span>
+                        {% endif %}
+                    </div>
+
+                    <div class="host-business">
+                        {{ hotel.hotel_owner.business_name }}
+                    </div>
+
+                </div>
 
             </div>
 
@@ -320,9 +439,9 @@
                     Best available rate
                 </div>
 
-                <button class="reserve-btn">
+                <a href="{% url 'create_reservation' hotel.hotel_slug %}" class="reserve-btn">
                     Reserve Now
-                </button>
+                </a>
 
                 <div class="info-row">
                     <span class="info-label">Regular Price</span>
@@ -337,6 +456,11 @@
                 <div class="info-row">
                     <span class="info-label">Property</span>
                     <span class="info-value">{{ hotel.hotel_name }}</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-label">Hosted By</span>
+                    <span class="info-value">{{ hotel.hotel_owner.business_name }}</span>
                 </div>
 
             </div>

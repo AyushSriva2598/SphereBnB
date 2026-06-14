@@ -26,23 +26,57 @@
     </div>
 
     <!-- Right actions -->
-    <!-- Right actions -->
     <div style="display:flex; align-items:center; gap:8px;">
-        <a href="{% url 'host_register' %}" class="pub-nav-link">Become a host</a>
+
+        <a href="{% url 'host_register' %}" class="pub-nav-link">
+            Become a host
+        </a>
 
         {% if user.is_authenticated %}
-        <a href="{% url 'host_logout' %}" class="btn-primary"
-            style="padding:10px 20px; border-radius:99px; font-size:13px; text-decoration:none;">
-            <span class="material-symbols-outlined icon-sm">logout</span>
-            Log out
-        </a>
-        {% elif request.resolver_match.url_name != 'host_login' %}
+
+        <div class="profile-dropdown">
+
+            <button class="profile-btn">
+                <span class="material-symbols-outlined icon-sm">account_circle</span>
+                {{ user.first_name|default:user.username }}
+            </button>
+
+            <div class="profile-menu">
+
+                <div class="profile-header">
+                    <div class="profile-name">
+                        {{ user.get_full_name|default:user.username }}
+                    </div>
+                </div>
+
+                <div class="profile-menu-links">
+
+                    <a href="{% url 'user_profile' %}">
+                        <span class="material-symbols-outlined icon-sm">person</span>
+                        My Profile
+                    </a>
+
+                    <a href="{% url 'logout_view' %}">
+                        <span class="material-symbols-outlined icon-sm">logout</span>
+                        Logout
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% elif request.resolver_match.url_name != 'login_view' %}
+
         <a href="{% url 'login_view' %}" class="btn-primary"
             style="padding:10px 20px; border-radius:99px; font-size:13px; text-decoration:none;">
             <span class="material-symbols-outlined icon-sm">account_circle</span>
             Log in
         </a>
+
         {% endif %}
+
     </div>
 </nav>
 
@@ -80,6 +114,90 @@
     .pub-nav-link:hover {
         background: #f3f3f3;
         color: #1a1c1c;
+    }
+
+    .profile-dropdown {
+        position: relative;
+    }
+
+    .profile-btn {
+        border: none;
+        cursor: pointer;
+        background: #ba0036;
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 18px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .profile-menu {
+        position: absolute;
+        top: 120%;
+        right: 0;
+
+        width: 260px;
+
+        background: #fff;
+        border: 1px solid #ececec;
+        border-radius: 16px;
+
+        box-shadow: 0 10px 30px rgba(0, 0, 0, .08);
+
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(8px);
+
+        transition: .2s;
+        overflow: hidden;
+        z-index: 999;
+    }
+
+    .profile-dropdown:hover .profile-menu {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    .profile-header {
+        padding: 16px;
+        border-bottom: 1px solid #ececec;
+    }
+
+    .profile-name {
+        font-size: 14px;
+        font-weight: 700;
+        color: #1a1c1c;
+    }
+
+    .profile-email {
+        font-size: 12px;
+        color: #777;
+        margin-top: 4px;
+    }
+
+    .profile-menu-links {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .profile-menu-links a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        padding: 14px 16px;
+
+        text-decoration: none;
+        color: #1a1c1c;
+        font-size: 14px;
+    }
+
+    .profile-menu-links a:hover {
+        background: #f7f7f7;
     }
 
     @media (max-width: 900px) {

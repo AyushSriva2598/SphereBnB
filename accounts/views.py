@@ -1,14 +1,14 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 # from django.contrib.auth.models import User
-from .models import HotelUser, HotelVendor, Hotel, Ameneties, HotelImage
+from .models import HotelUser, HotelVendor, Hotel, Ameneties, HotelImage, Booking
 from django.db.models import Q
 from .utils import generateRandomToken, sendEmailToken, sendOTPtoEmail, sendEmailTokenHost, sendOTPtoEmailHost,generateSlug
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate,login, logout
 from django.contrib.auth.decorators import login_required
 import random
-
+from datetime import date, timedelta
 
 # Create your views here.
 def login_view(request):
@@ -19,7 +19,7 @@ def login_view(request):
         print("EMAIL ENTERED:", repr(email))
         hotel_user = HotelUser.objects.filter(email =email)
         print("COUNT:", hotel_user.count())
-        
+
         if not hotel_user.exists():
             messages.warning(request, "No Account Found")
             return redirect('/accounts/login/')
@@ -265,17 +265,16 @@ def verify_otp_host(request, email):
 @login_required(login_url="host_login")
 def host_dashboard(request):
 
-    print("CURRENT USER:", request.user)
-    print("USER ID:", request.user.id)
-
     stays = Hotel.objects.filter(hotel_owner=request.user)
 
-    print("STAYS COUNT:", stays.count())
-    print("ALL HOTELS:", Hotel.objects.all())
+    all_bookings = Booking.objects.filter(hotel__hotel_owner=request.user).order_by('-created_at')
 
-    context={'stays': Hotel.objects.filter(hotel_owner=request.user)}
-    return render(request,"host/host_dashboard.html",context)
-
+    context = {
+        'stays': stays,
+        'requests': all_bookings.filter(status="pending"),
+        'bookings': all_bookings.filter(status="confirmed"),
+    }
+    return render(request, "host/host_dashboard.html", context)
 
 @login_required(login_url="host_login")
 def host_add_stay(request):
@@ -397,6 +396,11 @@ def host_edit_stay(request,slug):
     return render(request,"host/host_edit_stay.html", context={
         "stay": hotel_obj,
         "images": HotelImage.objects.filter(hotel=hotel_obj)})
+
+
+
+
+
 
 
 

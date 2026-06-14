@@ -66,5 +66,33 @@ def generateSlug(hotel_name):
         return generateSlug(hotel_name)
     
     return slug
+
+def bookingConfirmationEmail(email,booking):
+    subject= "Booking Confirmation - HostStay"
+    message= f"""Hi {booking.guest.first_name},
+
+Your reservation has been successfully confirmed.
+
+Booking Details:
+Property: {booking.hotel.hotel_name}
+Check-in: {booking.check_in}
+Check-out: {booking.check_out}
+Guests: {booking.guests}
+Booking ID: {booking.id}
+
+We look forward to hosting you and hope you have a wonderful stay.
+
+Thank you for choosing HostStay.
+
+Regards,
+HostStay Team
+    """
+    send_mail(
+        subject,
+        message,
+        settings.EMAIL_HOST_USER,
+        [email],
+        fail_silently=False,
+    )
     
     

@@ -1,0 +1,468 @@
+{% extends "utils/host/host_base.html" %}
+{% load static %}
+{% block title %}Reserve — {{ hotel.hotel_name }}{% endblock %}
+
+{% block nav %}
+{% include "utils/host/host_nav.html" with variant="public" %}{% endblock %}
+
+{% block extra_head %}
+
+<style>
+    .reserve-wrapper {
+        max-width: 960px;
+        margin: 0 auto;
+        /* body already offsets for the navbar via host_base padding-top */
+        padding: 28px 32px 60px;
+        min-height: 100vh;
+        display: grid;
+        grid-template-columns: 1.3fr 1fr;
+        gap: 24px;
+        align-items: flex-start;
+    }
+
+    /* HOTEL SUMMARY */
+    .summary-card {
+        padding: 24px;
+    }
+
+    .summary-image {
+        width: 100%;
+        aspect-ratio: 4 / 3;
+        border-radius: 14px;
+        overflow: hidden;
+        background: #f3f3f3;
+        margin-bottom: 18px;
+    }
+
+    .summary-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .summary-title {
+        font-size: 22px;
+        font-weight: 800;
+        color: #1a1c1c;
+        margin-bottom: 6px;
+    }
+
+    .summary-location {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        color: #5f5e5e;
+        font-size: 14px;
+        margin-bottom: 14px;
+    }
+
+    .summary-desc {
+        color: #5f5e5e;
+        font-size: 14px;
+        line-height: 1.6;
+        margin-bottom: 16px;
+    }
+
+    .summary-meta {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .meta-pill {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: #f3f3f3;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    /* BOOKING CARD */
+    .booking-card {
+        padding: 24px;
+        position: sticky;
+        /* sits just below the navbar */
+        top: calc(var(--nav-h, 64px) + 16px);
+    }
+
+    .booking-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #1a1c1c;
+        margin-bottom: 4px;
+    }
+
+    .booking-subtitle {
+        font-size: 13px;
+        color: #5f5e5e;
+        margin-bottom: 20px;
+    }
+
+    /* instant-confirm badge */
+    .instant-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: rgba(21, 128, 61, 0.10);
+        color: #15803d;
+        font-size: 12px;
+        font-weight: 700;
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 16px;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: #1a1c1c;
+        margin-bottom: 6px;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1.5px solid #d8d8d8;
+        border-radius: 10px;
+        font-size: 14px;
+        font-family: inherit;
+        color: #1a1c1c;
+        outline: none;
+        transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .form-group input:focus {
+        border-color: #1a1c1c;
+        box-shadow: 0 0 0 3px rgba(186, 0, 54, 0.08);
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .availability-msg {
+        font-size: 13px;
+        font-weight: 600;
+        padding: 10px 14px;
+        border-radius: 10px;
+        margin-bottom: 16px;
+        display: none;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .availability-msg.available {
+        display: flex;
+        background: rgba(21, 128, 61, 0.08);
+        color: #15803d;
+        border: 1px solid rgba(21, 128, 61, 0.18);
+    }
+
+    .availability-msg.unavailable {
+        display: flex;
+        background: rgba(186, 0, 54, 0.08);
+        color: #ba0036;
+        border: 1px solid rgba(186, 0, 54, 0.18);
+    }
+
+    .price-breakdown {
+        border-top: 1px solid #ececec;
+        padding-top: 16px;
+        margin-bottom: 20px;
+        display: none;
+    }
+
+    .price-breakdown.active {
+        display: block;
+    }
+
+    .price-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 14px;
+        color: #5f5e5e;
+        margin-bottom: 8px;
+    }
+
+    .price-row.total {
+        font-size: 16px;
+        font-weight: 700;
+        color: #1a1c1c;
+        border-top: 1px solid #ececec;
+        padding-top: 10px;
+        margin-top: 4px;
+    }
+
+    .reserve-btn {
+        width: 100%;
+        padding: 14px;
+        border: none;
+        border-radius: 999px;
+        background: #ba0036;
+        color: #fff;
+        font-size: 15px;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: inherit;
+        transition: opacity 0.15s, transform 0.1s;
+    }
+
+    .reserve-btn:hover:not(:disabled) {
+        opacity: 0.91;
+    }
+
+    .reserve-btn:active:not(:disabled) {
+        transform: scale(0.98);
+    }
+
+    .reserve-btn:disabled {
+        background: #d8d8d8;
+        cursor: not-allowed;
+    }
+
+    .check-btn {
+        width: 100%;
+        padding: 12px;
+        border: 1.5px solid #d8d8d8;
+        border-radius: 999px;
+        background: #fff;
+        color: #1a1c1c;
+        font-size: 14px;
+        font-weight: 600;
+        font-family: inherit;
+        cursor: pointer;
+        margin-bottom: 16px;
+        transition: background 0.15s, border-color 0.15s;
+    }
+
+    .check-btn:hover {
+        background: #f3f3f3;
+        border-color: #b0b0b0;
+    }
+
+    .check-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    @media (max-width: 900px) {
+        .reserve-wrapper {
+            grid-template-columns: 1fr;
+            padding: 20px 16px 40px;
+        }
+
+        .booking-card {
+            position: static;
+        }
+    }
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="reserve-wrapper">
+
+    <!-- HOTEL SUMMARY -->
+    <div class="hs-card summary-card">
+
+        {% with image=hotel.hotel_images.first %}
+        <div class="summary-image">
+            {% if image and image.image %}
+            <img src="{{ image.image.url }}" alt="{{ hotel.hotel_name }}">
+            {% else %}
+            <img src="{% static 'accounts/images/default-hotel.jpg' %}" alt="Default Hotel">
+            {% endif %}
+        </div>
+        {% endwith %}
+
+        <h1 class="summary-title">{{ hotel.hotel_name }}</h1>
+
+        <div class="summary-location">
+            <span class="material-symbols-outlined icon-sm">location_on</span>
+            {{ hotel.hotel_location }}
+        </div>
+
+        <p class="summary-desc">{{ hotel.hotel_description }}</p>
+
+        <div class="summary-meta">
+            <span class="meta-pill">
+                <span class="material-symbols-outlined icon-sm">currency_rupee</span>
+                {{ hotel.hotel_price }} / night
+            </span>
+
+            {% if hotel.hotel_offer_price %}
+            <span class="meta-pill" style="background:rgba(186,0,54,0.08);color:#ba0036;">
+                Offer ₹{{ hotel.hotel_offer_price }} / night
+            </span>
+            {% endif %}
+        </div>
+
+    </div>
+
+    <!-- BOOKING CARD -->
+    <div class="hs-card booking-card">
+
+        <div class="booking-title">Reserve your stay</div>
+        <div class="booking-subtitle">Pick your dates and confirm instantly.</div>
+
+        <div class="instant-badge">
+            <span class="material-symbols-outlined icon-xs">bolt</span>
+            Instant confirmation
+        </div>
+
+        <form id="reservationForm" method="post" action="{% url 'create_reservation' hotel.hotel_slug %}">
+            {% csrf_token %}
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="check_in">Check-in</label>
+                    <input type="date" id="check_in" name="check_in" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="check_out">Check-out</label>
+                    <input type="date" id="check_out" name="check_out" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="guests">Guests</label>
+                <input type="number" id="guests" name="guests" min="1" value="1" required>
+            </div>
+
+            <div class="availability-msg" id="availabilityMsg" role="status" aria-live="polite"></div>
+
+            <button type="button" class="check-btn" id="checkAvailabilityBtn">
+                Check Availability
+            </button>
+
+            <div class="price-breakdown" id="priceBreakdown">
+                <div class="price-row">
+                    <span id="nightsLabel">₹0 × 0 nights</span>
+                    <span id="nightsTotal">₹0</span>
+                </div>
+                <div class="price-row total">
+                    <span>Total</span>
+                    <span id="grandTotal">₹0</span>
+                </div>
+            </div>
+
+            <button type="submit" class="reserve-btn" id="reserveBtn" disabled>
+                Confirm &amp; Reserve
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+    const checkIn  = document.getElementById('check_in');
+    const checkOut = document.getElementById('check_out');
+    const checkBtn = document.getElementById('checkAvailabilityBtn');
+    const reserveBtn      = document.getElementById('reserveBtn');
+    const availabilityMsg = document.getElementById('availabilityMsg');
+    const priceBreakdown  = document.getElementById('priceBreakdown');
+    const nightsLabel = document.getElementById('nightsLabel');
+    const nightsTotal = document.getElementById('nightsTotal');
+    const grandTotal  = document.getElementById('grandTotal');
+
+    const pricePerNight = {{ hotel.hotel_offer_price|default:hotel.hotel_price }};
+    const hotelSlug     = "{{ hotel.hotel_slug }}";
+
+    // Restrict past dates
+    const today = new Date().toISOString().split('T')[0];
+    checkIn.setAttribute('min', today);
+    checkOut.setAttribute('min', today);
+
+    checkIn.addEventListener('change', () => {
+        // check-out must be at least the day after check-in
+        if (checkIn.value) {
+            const nextDay = new Date(checkIn.value);
+            nextDay.setDate(nextDay.getDate() + 1);
+            checkOut.setAttribute('min', nextDay.toISOString().split('T')[0]);
+        }
+        resetState();
+    });
+
+    checkOut.addEventListener('change', resetState);
+
+    function resetState() {
+        availabilityMsg.className = 'availability-msg';
+        availabilityMsg.textContent = '';
+        priceBreakdown.classList.remove('active');
+        reserveBtn.disabled = true;
+    }
+
+    function showMsg(type, icon, text) {
+        availabilityMsg.className = `availability-msg ${type}`;
+        availabilityMsg.innerHTML = `<span class="material-symbols-outlined icon-sm">${icon}</span>${text}`;
+    }
+
+    function nightsBetween(start, end) {
+        return Math.round((new Date(end) - new Date(start)) / 86400000);
+    }
+
+    checkBtn.addEventListener('click', () => {
+        if (!checkIn.value || !checkOut.value) {
+            showMsg('unavailable', 'error', 'Select both check-in and check-out dates.');
+            return;
+        }
+
+        const nights = nightsBetween(checkIn.value, checkOut.value);
+
+        if (nights <= 0) {
+            showMsg('unavailable', 'error', 'Check-out must be after check-in.');
+            priceBreakdown.classList.remove('active');
+            reserveBtn.disabled = true;
+            return;
+        }
+
+        checkBtn.textContent = 'Checking…';
+        checkBtn.disabled = true;
+
+        fetch(`/check-availability/${hotelSlug}/?check_in=${checkIn.value}&check_out=${checkOut.value}`)
+            .then(res => res.json())
+            .then(data => {
+                checkBtn.textContent = 'Check Availability';
+                checkBtn.disabled = false;
+
+                if (data.available) {
+                    showMsg('available', 'check_circle', 'Available — you can confirm instantly!');
+
+                    const total = nights * pricePerNight;
+                    nightsLabel.textContent = `₹${pricePerNight.toLocaleString('en-IN')} × ${nights} night${nights > 1 ? 's' : ''}`;
+                    nightsTotal.textContent = `₹${total.toLocaleString('en-IN')}`;
+                    grandTotal.textContent  = `₹${total.toLocaleString('en-IN')}`;
+                    priceBreakdown.classList.add('active');
+                    reserveBtn.disabled = false;
+                } else {
+                    showMsg('unavailable', 'event_busy', 'Not available for those dates. Please choose different dates.');
+                    priceBreakdown.classList.remove('active');
+                    reserveBtn.disabled = true;
+                }
+            })
+            .catch(() => {
+                checkBtn.textContent = 'Check Availability';
+                checkBtn.disabled = false;
+                showMsg('unavailable', 'wifi_off', 'Could not check availability. Please try again.');
+            });
+    });
+</script>
+
+{% endblock %}

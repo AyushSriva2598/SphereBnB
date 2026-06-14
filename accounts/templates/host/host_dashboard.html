@@ -8,21 +8,22 @@
 {% block extra_head %}
 
 <style>
+    /* ── Layout wrapper ── */
     .dashboard-wrapper {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 0 32px 40px;
-    min-height: 100vh;
-}
-
-    .dashboard-content {
+        max-width: 1280px;
+        margin: 0 auto;
+        /* body already applies padding-top: var(--nav-h) via host_base.
+           This padding is breathing room only — not a nav offset. */
+        padding: 28px 32px 64px;
+        min-height: 100vh;
         display: flex;
         flex-direction: column;
-        gap: 24px;
+        gap: 32px;
     }
 
+    /* ── Hero card ── */
     .hero-card {
-        padding: 32px;
+        padding: 36px 40px;
     }
 
     .hero-title {
@@ -36,7 +37,8 @@
     .hero-subtitle {
         font-size: 15px;
         color: #5f5e5e;
-        margin-bottom: 24px;
+        margin-bottom: 28px;
+        line-height: 1.6;
     }
 
     .hero-actions {
@@ -45,21 +47,23 @@
         flex-wrap: wrap;
     }
 
+    /* ── Section card ── */
     .section-card {
-        padding: 24px;
+        padding: 28px 32px;
     }
 
     .section-header {
         display: flex;
         justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
+        align-items: flex-start;
+        margin-bottom: 24px;
     }
 
     .section-title {
         font-size: 18px;
         font-weight: 700;
         color: #1a1c1c;
+        letter-spacing: -0.01em;
     }
 
     .section-subtitle {
@@ -68,43 +72,38 @@
         margin-top: 4px;
     }
 
+    /* ── Empty state ── */
     .empty-state {
-        border: 1px dashed #d8d8d8;
-        border-radius: 12px;
-        padding: 48px 24px;
+        border: 1.5px dashed #e2e2e2;
+        border-radius: 14px;
+        padding: 52px 24px;
         text-align: center;
+        background: #fafafa;
+    }
+
+    .empty-icon {
+        font-size: 40px;
+        color: #d0d0d0;
+        margin-bottom: 12px;
     }
 
     .empty-title {
-        font-size: 16px;
+        font-size: 15px;
         font-weight: 700;
         color: #1a1c1c;
-        margin-bottom: 8px;
+        margin-bottom: 6px;
     }
 
     .empty-subtitle {
-        font-size: 14px;
+        font-size: 13px;
         color: #5f5e5e;
     }
 
-    .future-box {
-        min-height: 220px;
-        border: 1px dashed #d8d8d8;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        color: #5f5e5e;
-        font-size: 14px;
-    }
-
-    /* STAY GRID */
-
+    /* ── Stay grid ── */
     .stay-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 24px;
+        gap: 20px;
     }
 
     .stay-card {
@@ -112,122 +111,27 @@
         display: flex;
         flex-direction: column;
         border-radius: 16px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
     .stay-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 24px rgba(0, 0, 0, .08);
+        transform: translateY(-4px);
+        box-shadow: 0 10px 28px rgba(0, 0, 0, .10);
     }
 
     .stay-image {
         position: relative;
         width: 100%;
-        aspect-ratio: 4 / 3;
-        background: #f3f3f3;
+        aspect-ratio: 16 / 10;
+        background: #f0f0f0;
         overflow: hidden;
     }
 
     .stay-image img {
         width: 100%;
         height: 100%;
-        object-fit: contain;
+        object-fit: cover;
         display: block;
-    }
-
-    .stay-image-actions {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        display: flex;
-        gap: 8px;
-    }
-
-    .upload-img-btn {
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        padding: 8px 12px;
-        border: none;
-        border-radius: 999px;
-        background: rgba(255, 255, 255, 0.92);
-        color: #1a1c1c;
-        font-size: 13px;
-        font-weight: 600;
-        cursor: pointer;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, .12);
-    }
-
-    .upload-img-btn:hover {
-        background: #fff;
-    }
-
-    /* UPLOAD MODAL */
-
-    .upload-modal-bg {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, .45);
-        z-index: 1000;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .upload-modal-bg.active {
-        display: flex;
-    }
-
-    .upload-modal {
-        background: #fff;
-        border-radius: 16px;
-        padding: 28px;
-        width: 100%;
-        max-width: 380px;
-    }
-
-    .upload-modal h3 {
-        font-size: 18px;
-        font-weight: 700;
-        margin-bottom: 6px;
-        color: #1a1c1c;
-    }
-
-    .upload-modal p {
-        font-size: 13px;
-        color: #5f5e5e;
-        margin-bottom: 18px;
-    }
-
-    .upload-modal input[type="file"] {
-        width: 100%;
-        margin-bottom: 18px;
-        font-size: 13px;
-    }
-
-    .upload-modal-actions {
-        display: flex;
-        justify-content: flex-end;
-        gap: 10px;
-    }
-
-    .upload-modal-actions button {
-        border: none;
-        border-radius: 8px;
-        padding: 10px 16px;
-        font-size: 14px;
-        font-weight: 600;
-        cursor: pointer;
-    }
-
-    .upload-cancel-btn {
-        background: #f3f3f3;
-        color: #1a1c1c;
-    }
-
-    .upload-submit-btn {
-        background: #ba0036;
-        color: #fff;
     }
 
     .stay-placeholder {
@@ -236,24 +140,54 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        color: #ba0036;
+        color: #d0d0d0;
+        background: #f5f5f5;
     }
 
     .stay-placeholder span {
-        font-size: 48px;
+        font-size: 52px;
+    }
+
+    .edit-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 2;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 7px 13px;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.95);
+        color: #1a1c1c;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, .18);
+        backdrop-filter: blur(4px);
+        transition: background 0.15s, box-shadow 0.15s;
+    }
+
+    .edit-btn:hover {
+        background: #fff;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, .22);
     }
 
     .stay-content {
-        padding: 18px;
+        padding: 20px;
         display: flex;
         flex-direction: column;
         flex: 1;
     }
 
     .stay-title {
-        font-size: 18px;
+        font-size: 16px;
         font-weight: 700;
-        margin-bottom: 8px;
+        color: #1a1c1c;
+        margin-bottom: 6px;
+        line-height: 1.3;
     }
 
     .stay-location {
@@ -261,15 +195,15 @@
         align-items: center;
         gap: 4px;
         color: #5f5e5e;
-        font-size: 14px;
-        margin-bottom: 12px;
+        font-size: 13px;
+        margin-bottom: 10px;
     }
 
     .stay-desc {
-        color: #5f5e5e;
-        font-size: 14px;
+        color: #6b6b6b;
+        font-size: 13px;
         margin-bottom: 16px;
-        line-height: 1.5;
+        line-height: 1.55;
         flex: 1;
     }
 
@@ -277,61 +211,119 @@
         display: flex;
         gap: 8px;
         flex-wrap: wrap;
+        align-items: center;
+        padding-top: 12px;
+        border-top: 1px solid #f0f0f0;
     }
 
     .meta-pill {
-        display: flex;
+        display: inline-flex;
         align-items: center;
         gap: 4px;
-        padding: 6px 10px;
+        padding: 5px 10px;
         border-radius: 999px;
         background: #f3f3f3;
         font-size: 13px;
         font-weight: 600;
+        color: #1a1c1c;
     }
 
-    .upload-img-btn {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        z-index: 2;
-        text-decoration: none;
+    .meta-pill.offer {
+        background: rgba(186, 0, 54, 0.08);
+        color: #ba0036;
+    }
+
+    /* ── Reservation rows ── */
+    .reservation-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px 0;
+        border-bottom: 1px solid #f0f0f0;
+        gap: 16px;
+    }
+
+    .reservation-row:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .reservation-row:first-child {
+        padding-top: 0;
+    }
+
+    .reservation-name {
+        font-weight: 700;
+        color: #1a1c1c;
+        font-size: 14px;
+        margin-bottom: 4px;
+    }
+
+    .reservation-meta {
+        font-size: 13px;
+        color: #5f5e5e;
+    }
+
+    /* ── Future box ── */
+    .future-box {
+        min-height: 180px;
+        border: 1.5px dashed #e2e2e2;
+        border-radius: 14px;
         display: flex;
         align-items: center;
-        gap: 6px;
-        padding: 8px 12px;
-        border: 1px solid rgba(0, 0, 0, 0.08);
-        border-radius: 999px;
-        background: #fff;
-        color: #1a1c1c;
-        font-size: 13px;
-        font-weight: 600;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, .25);
+        justify-content: center;
+        text-align: center;
+        color: #aaa;
+        font-size: 14px;
+        line-height: 1.7;
+        background: #fafafa;
     }
 
-    @media(max-width:768px) {
+    /* ── Action buttons in guest requests ── */
+    .btn-reject {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 8px 14px;
+        font-size: 13px;
+        font-weight: 700;
+        color: #5f5e5e;
+        background: transparent;
+        border: 1.5px solid #d8d8d8;
+        border-radius: 10px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background 0.15s, border-color 0.15s;
+    }
 
+    .btn-reject:hover {
+        background: #f5f5f5;
+        border-color: #b0b0b0;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
         .dashboard-wrapper {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 0 32px 40px;
+            padding: 20px 16px 48px;
+            gap: 20px;
+        }
+
+        .hero-card {
+            padding: 24px 20px;
         }
 
         .hero-title {
-            font-size: 26px;
+            font-size: 24px;
+        }
+
+        .section-card {
+            padding: 20px;
         }
 
         .stay-grid {
             grid-template-columns: 1fr;
         }
-
-        .stay-image {
-            position: relative;
-            height: 220px;
-            overflow: hidden;
-        }
-
-
     }
 </style>
 
@@ -339,46 +331,38 @@
 
 {% block content %}
 
-<!-- {% if messages %}
-<div class="messages-container">
-    {% for message in messages %}
-    <div class="message message-{{ message.tags }}">
-        {{ message }}
-    </div>
-    {% endfor %}
-</div>
-{% endif %} -->
-
 <div class="dashboard-wrapper">
-    <div class="dashboard-content">
 
-        <!-- HERO -->
-        <div class="hs-card hero-card">
+    <!-- ── HERO ── -->
+    <div class="hs-card hero-card anim">
+        <h1 class="hero-title">Welcome back 👋</h1>
+        <p class="hero-subtitle">
+            Manage stays, reservations, guests and operations from one workspace.
+        </p>
+        <div class="hero-actions">
+            <a href="{% url 'host_add_stay' %}" class="btn-primary" style="padding:13px 20px;text-decoration:none;">
+                <span class="material-symbols-outlined icon-sm">add</span>
+                Add Stay
+            </a>
+        </div>
+    </div>
 
-            <h1 class="hero-title">
-                Host Dashboard
-            </h1>
-
-            <p class="hero-subtitle">
-                Manage stays, reservations, guests and operations from one workspace.
-            </p>
-
-            <div class="hero-actions">
-                <a href="{% url 'host_add_stay' %}" class="btn-primary" style="padding:12px 18px;text-decoration:none;">
-                    <span class="material-symbols-outlined icon-sm">add</span>
-                    Add Stay
-                </a>
+    <!-- ── MY STAYS ── -->
+    <div class="hs-card section-card anim anim-d1">
+        <div class="section-header">
+            <div>
+                <div class="section-title">My Stays</div>
+                <div class="section-subtitle">All properties listed under your account.</div>
             </div>
-
+            <a href="{% url 'host_add_stay' %}" class="btn-ghost" style="font-size:13px;text-decoration:none;">
+                <span class="material-symbols-outlined icon-sm">add</span>
+                New
+            </a>
         </div>
 
-        <!-- MY STAYS -->
         {% if stays %}
-
         <div class="stay-grid">
-
             {% for stay in stays %}
-
             <div class="hs-card stay-card">
 
                 {% with image=stay.hotel_images.first %}
@@ -389,185 +373,132 @@
                     <img src="{% static 'accounts/images/default-hotel.jpg' %}" alt="Default Hotel">
                     {% endif %}
 
-                    <a href="{% url 'host_edit_stay' stay.hotel_slug %}" class="upload-img-btn">
-                        <span class="material-symbols-outlined icon-sm">edit</span>
+                    <a href="{% url 'host_edit_stay' stay.hotel_slug %}" class="edit-btn">
+                        <span class="material-symbols-outlined icon-xs">edit</span>
                         Edit
                     </a>
                 </div>
                 {% endwith %}
 
                 <div class="stay-content">
-
-                    <h3 class="stay-title">
-                        {{ stay.hotel_name }}
-                    </h3>
+                    <h3 class="stay-title">{{ stay.hotel_name }}</h3>
 
                     <div class="stay-location">
-                        <span class="material-symbols-outlined icon-sm">location_on</span>
+                        <span class="material-symbols-outlined icon-xs">location_on</span>
                         {{ stay.hotel_location }}
                     </div>
 
-                    <p class="stay-desc">
-                        {{ stay.hotel_description|truncatechars:120 }}
-                    </p>
+                    <p class="stay-desc">{{ stay.hotel_description|truncatechars:110 }}</p>
 
                     <div class="stay-meta">
                         <span class="meta-pill">
-                            <span class="material-symbols-outlined icon-sm">currency_rupee</span>
+                            <span class="material-symbols-outlined icon-xs">currency_rupee</span>
                             {{ stay.hotel_price }}
                         </span>
-
                         {% if stay.hotel_offer_price %}
-                        <span class="meta-pill">
-                            Offer: ₹{{ stay.hotel_offer_price }}
+                        <span class="meta-pill offer">
+                            Offer ₹{{ stay.hotel_offer_price }}
                         </span>
                         {% endif %}
                     </div>
-
                 </div>
 
             </div>
-
             {% endfor %}
-
         </div>
 
         {% else %}
-
         <div class="empty-state">
+            <div class="empty-icon">
+                <span class="material-symbols-outlined" style="font-size:40px;color:#d0d0d0;">bed</span>
+            </div>
             <div class="empty-title">No stays added yet</div>
             <div class="empty-subtitle">Create your first stay to start accepting reservations.</div>
         </div>
-
         {% endif %}
 
-        <!-- RESERVATIONS -->
-        <div class="hs-card section-card">
+    </div>
 
-            <div class="section-header">
-                <div>
-                    <div class="section-title">Recent Reservations</div>
-                    <div class="section-subtitle">Latest booking activity.</div>
+    <!-- ── RECENT RESERVATIONS ── -->
+    <div class="hs-card section-card anim anim-d2">
+        <div class="section-header">
+            <div>
+                <div class="section-title">Recent Reservations</div>
+                <div class="section-subtitle">Latest confirmed booking activity.</div>
+            </div>
+        </div>
+
+        {% if bookings %}
+        {% for booking in bookings %}
+        <div class="reservation-row">
+            <div>
+                <div class="reservation-name">{{ booking.hotel.hotel_name }}</div>
+                <div class="reservation-meta">
+                    {{ booking.check_in }} → {{ booking.check_out }}
+                    · {{ booking.guests }} guest{{ booking.guests|pluralize }}
                 </div>
             </div>
+            <span class="meta-pill" style="background:rgba(21,128,61,0.08);color:#15803d;white-space:nowrap;">
+                ✓ Confirmed
+            </span>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">
+                <span class="material-symbols-outlined" style="font-size:40px;color:#d0d0d0;">calendar_today</span>
+            </div>
+            <div class="empty-title">No reservations yet</div>
+            <div class="empty-subtitle">Confirmed bookings will appear here.</div>
+        </div>
+        {% endif %}
 
-            {% if bookings %}
-            {% for booking in bookings %}
-            <div class="reservation-row">
-                <!-- Fill later -->
+    </div>
+
+    <!-- ── GUEST REQUESTS ── -->
+    <div class="calendar-grid">
+
+        {% for day in calendar_days %}
+
+        <div class="calendar-day {% if day.booked %}booked{% else %}free{% endif %}">
+
+            <div>
+                {{ day.date|date:"d M" }}
             </div>
-            {% endfor %}
-            {% else %}
-            <div class="empty-state">
-                <div class="empty-title">No reservations yet</div>
-                <div class="empty-subtitle">Reservation activity will appear here.</div>
+
+            <div style="margin-top:8px;font-size:11px;">
+
+                {% if day.booked %}
+                Reserved
+                {% else %}
+                Available
+                {% endif %}
+
             </div>
-            {% endif %}
 
         </div>
 
-        <!-- GUEST REQUESTS -->
-        <div class="hs-card section-card">
+        {% endfor %}
 
-            <div class="section-header">
-                <div>
-                    <div class="section-title">Guest Requests</div>
-                    <div class="section-subtitle">Messages and pending actions.</div>
-                </div>
-            </div>
+    </div>
 
-            {% if requests %}
-            {% for request in requests %}
-            <div class="request-row">
-                <!-- Fill later -->
+    <!-- ── FUTURE ANALYTICS ── -->
+    <div class="hs-card section-card anim anim-d4">
+        <div class="section-header">
+            <div>
+                <div class="section-title">Analytics</div>
+                <div class="section-subtitle">Reserved for forecasting and business insights.</div>
             </div>
-            {% endfor %}
-            {% else %}
-            <div class="empty-state">
-                <div class="empty-title">No guest requests</div>
-                <div class="empty-subtitle">Guest communication will appear here.</div>
-            </div>
-            {% endif %}
-
         </div>
-
-        <!-- FUTURE ANALYTICS -->
-        <div class="hs-card section-card">
-
-            <div class="section-header">
-                <div>
-                    <div class="section-title">Future Analytics</div>
-                    <div class="section-subtitle">Reserved for forecasting and business insights.</div>
-                </div>
-            </div>
-
-            <div class="future-box">
-                Occupancy trends, revenue analytics,
-                AI forecasting and recommendations
+        <div class="future-box">
+            <span>
+                Occupancy trends, revenue analytics,<br>
+                AI forecasting and recommendations<br>
                 will appear here.
-            </div>
-
+            </span>
         </div>
-
     </div>
+
 </div>
-
-<!-- IMAGE UPLOAD MODAL -->
-<div class="upload-modal-bg" id="uploadModalBg">
-    <div class="upload-modal">
-        <h3>Upload Stay Image</h3>
-        <p>Choose an image for this listing.</p>
-
-        <form id="uploadForm" method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            <input type="hidden" name="stay_id" id="uploadStayId">
-            <input type="file" name="image" accept="image/*" required>
-
-            <div class="upload-modal-actions">
-                <button type="button" class="upload-cancel-btn" onclick="closeUploadModal()">Cancel</button>
-                <button type="submit" class="upload-submit-btn">Upload</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<script>
-    const uploadModalBg = document.getElementById('uploadModalBg');
-    const uploadForm = document.getElementById('uploadForm');
-    const uploadStayId = document.getElementById('uploadStayId');
-
-    function openUploadModal(stayId) {
-        uploadStayId.value = stayId;
-        uploadModalBg.classList.add('active');
-    }
-
-    function closeUploadModal() {
-        uploadModalBg.classList.remove('active');
-        uploadForm.reset();
-    }
-
-    uploadModalBg.addEventListener('click', function (e) {
-        if (e.target === uploadModalBg) closeUploadModal();
-    });
-
-    uploadForm.addEventListener('submit', function (e) {
-        e.preventDefault();
-
-        const stayId = uploadStayId.value;
-        const formData = new FormData(uploadForm);
-
-        fetch(`/host/stays/${stayId}/upload-image/`, {
-            method: 'POST',
-            body: formData,
-            headers: { 'X-CSRFToken': formData.get('csrfmiddlewaretoken') }
-        })
-            .then(res => {
-                if (!res.ok) throw new Error('Upload failed');
-                return res.json();
-            })
-            .then(() => location.reload())
-            .catch(() => alert('Upload failed. Try again.'));
-    });
-</script>
 
 {% endblock %}

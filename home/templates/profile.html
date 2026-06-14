@@ -1,0 +1,284 @@
+{% extends "utils/base.html" %}
+{% load static %}
+
+{% block title %}
+My Profile
+{% endblock %}
+
+{% block nav %}
+{% include "utils/nav.html" with variant="public" %}
+{% endblock %}
+
+{% block extra_head %}
+
+<style>
+
+.profile-wrapper{
+    max-width:1200px;
+    margin:0 auto;
+    padding:110px 32px 40px;
+}
+
+.profile-grid{
+    display:grid;
+    grid-template-columns:320px 1fr;
+    gap:24px;
+    align-items:start;
+}
+
+.profile-card{
+    background:#fff;
+    border:1px solid #ececec;
+    border-radius:18px;
+    padding:28px 24px;
+    text-align:center;
+}
+
+.profile-avatar{
+    width:84px;
+    height:84px;
+    border-radius:50%;
+    background:linear-gradient(135deg, #ba0036, #e0457a);
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:32px;
+    font-weight:700;
+    margin:0 auto 16px;
+}
+
+.profile-name{
+    font-size:19px;
+    font-weight:800;
+    color:#1a1c1c;
+    margin-bottom:4px;
+}
+
+.profile-email{
+    color:#8a8a8a;
+    font-size:13px;
+    margin-bottom:24px;
+    word-break:break-word;
+}
+
+.profile-stats{
+    display:flex;
+    border-top:1px solid #ececec;
+    padding-top:20px;
+    margin-bottom:24px;
+}
+
+.profile-stat{
+    flex:1;
+}
+
+.profile-stat + .profile-stat{
+    border-left:1px solid #ececec;
+}
+
+.profile-stat-label{
+    font-size:12px;
+    color:#8a8a8a;
+    margin-bottom:4px;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+}
+
+.profile-stat-value{
+    font-size:16px;
+    font-weight:700;
+    color:#1a1c1c;
+    word-break:break-word;
+}
+
+.logout-btn{
+    width:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:8px;
+    text-decoration:none;
+    padding:12px;
+    border-radius:999px;
+}
+
+.bookings-card{
+    background:#fff;
+    border:1px solid #ececec;
+    border-radius:18px;
+    padding:24px;
+}
+
+.section-title{
+    font-size:20px;
+    font-weight:800;
+    color:#1a1c1c;
+    margin-bottom:4px;
+}
+
+.section-subtitle{
+    font-size:13px;
+    color:#8a8a8a;
+    margin-bottom:20px;
+}
+
+.booking-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:16px;
+    padding:18px 0;
+    border-bottom:1px solid #ececec;
+}
+
+.booking-row:last-child{
+    border-bottom:none;
+    padding-bottom:0;
+}
+
+.booking-info{
+    min-width:0;
+}
+
+.booking-title{
+    font-weight:700;
+    font-size:15px;
+    color:#1a1c1c;
+    margin-bottom:6px;
+}
+
+.booking-meta{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-size:13px;
+    color:#8a8a8a;
+}
+
+.booking-status{
+    flex-shrink:0;
+    padding:6px 14px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:700;
+    text-transform:capitalize;
+}
+
+.status-pending{
+    background:rgba(230, 162, 0, .1);
+    color:#b6840a;
+}
+
+.status-confirmed{
+    background:rgba(30, 125, 30, .1);
+    color:#1e7d1e;
+}
+
+.status-cancelled{
+    background:rgba(186, 0, 54, .08);
+    color:#ba0036;
+}
+
+.empty-bookings{
+    text-align:center;
+    padding:48px 24px;
+    color:#8a8a8a;
+    font-size:14px;
+}
+
+@media(max-width:900px){
+
+    .profile-grid{
+        grid-template-columns:1fr;
+    }
+
+}
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="profile-wrapper">
+
+    <div class="profile-grid">
+
+        <div class="profile-card">
+
+            <div class="profile-avatar">
+                {{ user.first_name|first|upper }}
+            </div>
+
+            <div class="profile-name">
+                {{ user.get_full_name|default:user.username }}
+            </div>
+
+            <div class="profile-email">
+                {{ user.email }}
+            </div>
+
+            <div class="profile-stats">
+
+                <div class="profile-stat">
+                    <div class="profile-stat-label">Username</div>
+                    <div class="profile-stat-value">{{ user.username }}</div>
+                </div>
+
+                <div class="profile-stat">
+                    <div class="profile-stat-label">Bookings</div>
+                    <div class="profile-stat-value">{{ bookings.count }}</div>
+                </div>
+
+            </div>
+
+            <a href="{% url 'logout_view' %}" class="btn-primary logout-btn">
+                <span class="material-symbols-outlined icon-sm">logout</span>
+                Logout
+            </a>
+
+        </div>
+
+        <div class="bookings-card">
+
+            <h2 class="section-title">My Bookings</h2>
+            <p class="section-subtitle">A history of your stays and reservations.</p>
+
+            {% for booking in bookings %}
+
+            <div class="booking-row">
+
+                <div class="booking-info">
+
+                    <div class="booking-title">
+                        {{ booking.hotel.hotel_name }}
+                    </div>
+
+                    <div class="booking-meta">
+                        <span class="material-symbols-outlined icon-sm" style="font-size:16px;">calendar_month</span>
+                        {{ booking.check_in }} → {{ booking.check_out }}
+                    </div>
+
+                </div>
+
+                <span class="booking-status status-{{ booking.status }}">
+                    {{ booking.get_status_display }}
+                </span>
+
+            </div>
+
+            {% empty %}
+
+            <div class="empty-bookings">
+                <p>No bookings yet. Once you reserve a stay, it'll show up here.</p>
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
