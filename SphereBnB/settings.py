@@ -100,7 +100,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATICFILES_DIRS = [                                   # ← was STATICFILES_DIR (typo) and wrong type
-    os.path.join(BASE_DIR, 'hotels/static'),
+    os.path.join(BASE_DIR, 'accounts','static'),
 ]
 
 # ── Media files ───────────────────────────────────────────
