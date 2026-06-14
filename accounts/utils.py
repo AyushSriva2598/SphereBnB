@@ -95,4 +95,69 @@ HostStay Team
         fail_silently=False,
     )
     
-    
+def hostBookingCancellationEmail(host_email, booking):
+
+    subject = "Guest Reservation Cancelled - HostStay"
+
+    message = f"""Hello Host,
+
+A guest has cancelled an existing reservation for your property.
+
+Cancelled Reservation Details:
+
+Property: {booking.hotel.hotel_name}
+Guest: {booking.guest.get_full_name() or booking.guest.username}
+Guest Email: {booking.guest.email}
+
+Check-in: {booking.check_in}
+Check-out: {booking.check_out}
+Guests: {booking.guests}
+
+Booking ID: {booking.id}
+
+The dates covered by this reservation are now available for new bookings.
+
+Regards,
+HostStay Team
+"""
+
+    send_mail(
+        subject,
+        message,
+        settings.EMAIL_HOST_USER,
+        [host_email],
+        fail_silently=False,
+    )
+
+def userbookingCancellationEmail(guest_email, booking):
+
+    subject = "Reservation Cancelled - HostStay"
+
+    message = f"""Hi {booking.guest.first_name},
+
+Your reservation has been cancelled successfully.
+
+Cancelled Booking Details:
+Property: {booking.hotel.hotel_name}
+Check-in: {booking.check_in}
+Check-out: {booking.check_out}
+Guests: {booking.guests}
+Booking ID: {booking.id}
+
+The dates for this reservation have now been released and made available for booking again.
+
+If this cancellation was made by mistake, you can make a new reservation through HostStay.
+
+Thank you for choosing HostStay.
+
+Regards,
+HostStay Team
+"""
+
+    send_mail(
+        subject,
+        message,
+        settings.EMAIL_HOST_USER,
+        [guest_email],
+        fail_silently=False,
+    )

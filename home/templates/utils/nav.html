@@ -1,400 +1,313 @@
 {% if variant == "public" %}
 
-<!-- ════════════════════════════════════
-       PUBLIC NAV  (login / signup / verify)
-       ════════════════════════════════════ -->
-<nav style="
-    position: fixed; top: 0; left: 0; right: 0; z-index: 50;
-    height: 72px; background: #fff; border-bottom: 1px solid #e2e2e2;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 80px;
-  ">
+<nav class="guest-nav">
+
     <!-- Logo -->
-    <a href="/" style="display:flex; align-items:center; gap:8px; text-decoration:none;">
-        <span class="material-symbols-outlined icon-fill" style="color:#ba0036; font-size:26px;">house</span>
-        <span style="font-size:22px; font-weight:800; color:#ba0036; letter-spacing:-0.02em;">HostStay</span>
+    <a href="/" class="guest-nav-logo">
+        <span class="material-symbols-outlined icon-fill" style="color:#ba0036; font-size:24px;">house</span>
+        <span>HostStay</span>
     </a>
 
-    <!-- Destination pills -->
-    <div class="pub-nav-cities">
-        <span class="pub-city-pill">Paris</span>
-        <span class="pub-city-pill">Toronto</span>
-        <span class="pub-city-pill">Miami</span>
-        <span class="pub-city-pill">Tokyo</span>
-        <span class="pub-city-pill">London</span>
-        <span class="pub-city-pill">Sydney</span>
+    <!-- Guest quick links — what a user actually needs -->
+    <div class="guest-nav-links">
+        <a href="/"
+           class="guest-nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+            <span class="material-symbols-outlined icon-sm">explore</span>
+            Explore
+        </a>
+
+        {% if user.is_authenticated %}
+        <a href="{% url 'user_profile' %}"
+           class="guest-nav-link {% if request.resolver_match.url_name == 'user_profile' %}active{% endif %}">
+            <span class="material-symbols-outlined icon-sm">luggage</span>
+            My Trips
+        </a>
+        {% endif %}
+
+        <a href="{% url 'host_login' %}"
+           class="guest-nav-link {% if request.resolver_match.url_name == 'host_register' %}active{% endif %}">
+            <span class="material-symbols-outlined icon-sm">add_home</span>
+            Become a Host
+        </a>
     </div>
 
-    <!-- Right actions -->
-    <div style="display:flex; align-items:center; gap:8px;">
-
-        <a href="{% url 'host_register' %}" class="pub-nav-link">
-            Become a host
-        </a>
+    <!-- Right: auth -->
+    <div class="guest-nav-right">
 
         {% if user.is_authenticated %}
 
         <div class="profile-dropdown">
-
-            <button class="profile-btn">
-                <span class="material-symbols-outlined icon-sm">account_circle</span>
-                {{ user.first_name|default:user.username }}
+            <button class="guest-profile-btn">
+                <div class="guest-avatar">{{ user.first_name|first|upper }}</div>
+                <span class="guest-profile-name">{{ user.first_name|default:user.username }}</span>
+                <span class="material-symbols-outlined" style="font-size:16px; color:#999;">expand_more</span>
             </button>
 
             <div class="profile-menu">
-
                 <div class="profile-header">
-                    <div class="profile-name">
-                        {{ user.get_full_name|default:user.username }}
-                    </div>
+                    <div class="profile-name">{{ user.get_full_name|default:user.username }}</div>
+                    <div class="profile-email">{{ user.email }}</div>
                 </div>
-
                 <div class="profile-menu-links">
-
+                    <a href="/">
+                        <span class="material-symbols-outlined icon-sm">explore</span>
+                        Explore Stays
+                    </a>
+                    <a href="{% url 'user_profile' %}">
+                        <span class="material-symbols-outlined icon-sm">luggage</span>
+                        My Trips
+                    </a>
                     <a href="{% url 'user_profile' %}">
                         <span class="material-symbols-outlined icon-sm">person</span>
-                        My Profile
+                        Profile
                     </a>
-
-                    <a href="{% url 'logout_view' %}">
+                    <div style="height:1px; background:#f0f0f0; margin:4px 0;"></div>
+                    <a href="{% url 'logout_view' %}" style="color:#ba1a1a;">
                         <span class="material-symbols-outlined icon-sm">logout</span>
                         Logout
                     </a>
-
                 </div>
-
             </div>
-
         </div>
 
-        {% elif request.resolver_match.url_name != 'login_view' %}
+        {% else %}
 
+        <a href="{% url 'register_view' %}" class="guest-nav-link" style="color:#1a1c1c;">
+            Sign up
+        </a>
         <a href="{% url 'login_view' %}" class="btn-primary"
-            style="padding:10px 20px; border-radius:99px; font-size:13px; text-decoration:none;">
-            <span class="material-symbols-outlined icon-sm">account_circle</span>
+           style="padding:9px 20px; border-radius:99px; font-size:13px; text-decoration:none;">
             Log in
         </a>
 
         {% endif %}
 
     </div>
+
 </nav>
 
 <style>
-    .pub-nav-cities {
+    .guest-nav {
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        z-index: 50;
+        height: 68px;
+        background: #fff;
+        border-bottom: 1px solid #e8e8e8;
         display: flex;
-        gap: 4px;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 56px;
+        gap: 40px;
     }
 
-    .pub-city-pill {
+    /* Logo */
+    .guest-nav-logo {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        text-decoration: none;
+        flex-shrink: 0;
+    }
+    .guest-nav-logo span:last-child {
+        font-size: 19px;
+        font-weight: 800;
+        color: #ba0036;
+        letter-spacing: -0.02em;
+    }
+
+    /* Center links */
+    .guest-nav-links {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex: 1;
+        justify-content: center;
+    }
+
+    .guest-nav-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
         font-size: 13px;
-        font-weight: 600;
-        color: #5f5e5e;
-        padding: 6px 14px;
-        border-radius: 99px;
-        cursor: pointer;
-        transition: background 0.15s, color 0.15s;
-    }
-
-    .pub-city-pill:hover {
-        background: #f3f3f3;
-        color: #1a1c1c;
-    }
-
-    .pub-nav-link {
-        font-size: 14px;
         font-weight: 600;
         color: #5f5e5e;
         text-decoration: none;
-        padding: 8px 14px;
-        border-radius: 99px;
-        transition: background 0.15s;
+        padding: 8px 18px;
+        border-radius: 10px;
+        transition: background 0.15s, color 0.15s;
+        white-space: nowrap;
+    }
+    .guest-nav-link:hover { background: #f3f3f3; color: #1a1c1c; }
+    .guest-nav-link.active {
+        background: rgba(186, 0, 54, 0.07);
+        color: #ba0036;
     }
 
-    .pub-nav-link:hover {
-        background: #f3f3f3;
-        color: #1a1c1c;
+    /* Right cluster */
+    .guest-nav-right {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-shrink: 0;
     }
 
-    .profile-dropdown {
-        position: relative;
-    }
-
-    .profile-btn {
-        border: none;
-        cursor: pointer;
-        background: #ba0036;
-        color: white;
+    /* Profile button */
+    .guest-profile-btn {
         display: flex;
         align-items: center;
         gap: 8px;
-        padding: 10px 18px;
+        padding: 5px 12px 5px 5px;
+        border: 1.5px solid #e2e2e2;
         border-radius: 999px;
-        font-size: 13px;
-        font-weight: 600;
+        background: #fff;
+        cursor: pointer;
+        font-family: inherit;
+        transition: border-color 0.15s, box-shadow 0.15s;
     }
+    .guest-profile-btn:hover {
+        border-color: #aaa;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    }
+
+    .guest-avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ba0036, #e0457a);
+        color: #fff;
+        font-size: 12px;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .guest-profile-name {
+        font-size: 13px;
+        font-weight: 700;
+        color: #1a1c1c;
+    }
+
+    /* Dropdown */
+    .profile-dropdown { position: relative; }
 
     .profile-menu {
         position: absolute;
-        top: 120%;
+        top: calc(100% + 8px);
         right: 0;
-
-        width: 260px;
-
+        width: 220px;
         background: #fff;
-        border: 1px solid #ececec;
-        border-radius: 16px;
-
-        box-shadow: 0 10px 30px rgba(0, 0, 0, .08);
-
+        border: 1px solid #e8e8e8;
+        border-radius: 14px;
+        box-shadow: 0 8px 28px rgba(0,0,0,0.10);
         opacity: 0;
         visibility: hidden;
-        transform: translateY(8px);
-
-        transition: .2s;
+        transform: translateY(6px);
+        transition: opacity 0.18s, transform 0.18s, visibility 0.18s;
         overflow: hidden;
         z-index: 999;
     }
-
-    .profile-dropdown:hover .profile-menu {
+    .profile-dropdown:hover .profile-menu,
+    .profile-dropdown:focus-within .profile-menu {
         opacity: 1;
         visibility: visible;
         transform: translateY(0);
     }
 
     .profile-header {
-        padding: 16px;
-        border-bottom: 1px solid #ececec;
+        padding: 14px 16px;
+        border-bottom: 1px solid #f0f0f0;
     }
+    .profile-name { font-size: 14px; font-weight: 700; color: #1a1c1c; }
+    .profile-email { font-size: 12px; color: #999; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-    .profile-name {
-        font-size: 14px;
-        font-weight: 700;
-        color: #1a1c1c;
-    }
-
-    .profile-email {
-        font-size: 12px;
-        color: #777;
-        margin-top: 4px;
-    }
-
-    .profile-menu-links {
-        display: flex;
-        flex-direction: column;
-    }
-
+    .profile-menu-links { display: flex; flex-direction: column; padding: 6px 0; }
     .profile-menu-links a {
         display: flex;
         align-items: center;
         gap: 10px;
-
-        padding: 14px 16px;
-
+        padding: 10px 16px;
         text-decoration: none;
         color: #1a1c1c;
-        font-size: 14px;
+        font-size: 13px;
+        font-weight: 500;
+        transition: background 0.12s;
     }
+    .profile-menu-links a:hover { background: #f7f7f7; }
 
-    .profile-menu-links a:hover {
-        background: #f7f7f7;
-    }
-
-    @media (max-width: 900px) {
-        .pub-nav-cities {
-            display: none !important;
-        }
-
-        nav {
-            padding: 0 16px !important;
-        }
+    /* Responsive */
+    @media (max-width: 860px) {
+        .guest-nav-links { display: none; }
+        .guest-nav { padding: 0 16px; }
     }
 </style>
 
 {% elif variant == "auth" %}
 
-<!-- ════════════════════════════════════
-       AUTH TOPBAR  (dashboard / inner pages)
-       ════════════════════════════════════ -->
-<header style="
-    position: fixed; top: 0; left: 0; right: 0; z-index: 50;
-    height: 72px; background: #fff; border-bottom: 1px solid #e2e2e2;
-    display: flex; align-items: center;
-    padding: 0 24px; gap: 16px;
-  ">
-    <!-- Logo — same width as sidebar so content aligns -->
-    <a href="/" style="display:flex; align-items:center; gap:8px; text-decoration:none; min-width:256px;">
-        <span class="material-symbols-outlined icon-fill" style="color:#ba0036; font-size:24px;">house</span>
-        <span style="font-size:20px; font-weight:800; color:#ba0036; letter-spacing:-0.02em;">HostStay</span>
+<!-- auth variant unchanged -->
+<header style="position:fixed;top:0;left:0;right:0;z-index:50;height:64px;background:#fff;border-bottom:1px solid #e2e2e2;display:flex;align-items:center;padding:0 24px;gap:16px;">
+    <a href="/" style="display:flex;align-items:center;gap:8px;text-decoration:none;min-width:256px;">
+        <span class="material-symbols-outlined icon-fill" style="color:#ba0036;font-size:24px;">house</span>
+        <span style="font-size:20px;font-weight:800;color:#ba0036;letter-spacing:-0.02em;">HostStay</span>
     </a>
-
-    <!-- Top nav links -->
-    <nav style="display:flex; align-items:center; gap:4px; flex:1;">
-        <a href="{% url 'listings' %}"
-            class="auth-toplink {% if active_nav == 'listings' %}active{% endif %}">Listings</a>
+    <nav style="display:flex;align-items:center;gap:4px;flex:1;">
+        <a href="{% url 'listings' %}" class="auth-toplink {% if active_nav == 'listings' %}active{% endif %}">Listings</a>
         <a href="{% url 'inbox' %}" class="auth-toplink {% if active_nav == 'inbox' %}active{% endif %}">Inbox</a>
-        <a href="{% url 'calendar' %}"
-            class="auth-toplink {% if active_nav == 'calendar' %}active{% endif %}">Calendar</a>
+        <a href="{% url 'calendar' %}" class="auth-toplink {% if active_nav == 'calendar' %}active{% endif %}">Calendar</a>
     </nav>
-
-    <!-- Right cluster -->
-    <div style="display:flex; align-items:center; gap:8px;">
-        <!-- Search -->
-        <div
-            style="display:flex; align-items:center; gap:8px; background:#f3f3f3; border:1px solid #e2e2e2; border-radius:99px; padding:8px 16px;">
+    <div style="display:flex;align-items:center;gap:8px;">
+        <div style="display:flex;align-items:center;gap:8px;background:#f3f3f3;border:1px solid #e2e2e2;border-radius:99px;padding:8px 16px;">
             <span class="material-symbols-outlined icon-sm" style="color:#5f5e5e;">search</span>
-            <input type="text" placeholder="Search reservations…" style="
-          background:transparent; border:none; outline:none;
-          font-family:inherit; font-size:13px; color:#1a1c1c; width:160px;
-        " />
+            <input type="text" placeholder="Search reservations…" style="background:transparent;border:none;outline:none;font-family:inherit;font-size:13px;color:#1a1c1c;width:160px;" />
         </div>
-
-        <!-- Notifications -->
         <button class="auth-icon-btn" title="Notifications" style="position:relative;">
             <span class="material-symbols-outlined" style="font-size:22px;">notifications</span>
-            <span
-                style="position:absolute; top:7px; right:7px; width:8px; height:8px; border-radius:50%; background:#ba0036; border:2px solid #fff;"></span>
+            <span style="position:absolute;top:7px;right:7px;width:8px;height:8px;border-radius:50%;background:#ba0036;border:2px solid #fff;"></span>
         </button>
-
-        <!-- Help -->
-        <button class="auth-icon-btn" title="Help">
-            <span class="material-symbols-outlined" style="font-size:22px;">help</span>
-        </button>
-
-        <!-- Avatar -->
-        <div
-            style="width:38px; height:38px; border-radius:50%; border:2px solid #e5bdbe; overflow:hidden; cursor:pointer; background:#e2e2e2;">
-            {% if user.avatar %}
-            <img src="{{ user.avatar.url }}" alt="{{ user.get_full_name }}"
-                style="width:100%; height:100%; object-fit:cover;" />
-            {% else %}
-            <div
-                style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:rgba(186,0,54,0.10); color:#ba0036; font-weight:700; font-size:14px;">
-                {{ user.first_name|first|upper }}
-            </div>
-            {% endif %}
+        <button class="auth-icon-btn" title="Help"><span class="material-symbols-outlined" style="font-size:22px;">help</span></button>
+        <div style="width:38px;height:38px;border-radius:50%;border:2px solid #e5bdbe;overflow:hidden;cursor:pointer;background:#e2e2e2;">
+            {% if user.avatar %}<img src="{{ user.avatar.url }}" alt="{{ user.get_full_name }}" style="width:100%;height:100%;object-fit:cover;" />
+            {% else %}<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:rgba(186,0,54,0.10);color:#ba0036;font-weight:700;font-size:14px;">{{ user.first_name|first|upper }}</div>{% endif %}
         </div>
     </div>
 </header>
 
-<!-- ════════════════════════════════════
-       SIDEBAR  (always paired with auth topbar)
-       ════════════════════════════════════ -->
-<aside style="
-    position: fixed; top: 72px; left: 0;
-    width: 280px; height: calc(100vh - 72px);
-    background: #fff; border-right: 1px solid #e2e2e2;
-    display: flex; flex-direction: column;
-    padding: 24px 0 16px; z-index: 40; overflow-y: auto;
-  ">
-    <!-- Host identity -->
-    <div style="padding: 0 24px 24px; border-bottom: 1px solid #e2e2e2; margin-bottom: 8px;">
-        <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px;">
-            <div class="stat-icon-wrap">
-                <span class="material-symbols-outlined icon-fill">home_work</span>
-            </div>
+<aside style="position:fixed;top:64px;left:0;width:280px;height:calc(100vh - 64px);background:#fff;border-right:1px solid #e2e2e2;display:flex;flex-direction:column;padding:24px 0 16px;z-index:40;overflow-y:auto;">
+    <div style="padding:0 24px 24px;border-bottom:1px solid #e2e2e2;margin-bottom:8px;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+            <div class="stat-icon-wrap"><span class="material-symbols-outlined icon-fill">home_work</span></div>
             <div>
-                <p
-                    style="font-size:12px; font-weight:700; color:#ba0036; letter-spacing:0.04em; text-transform:uppercase; margin:0 0 2px;">
-                    Host Management</p>
-                <p style="font-size:13px; color:#5f5e5e; margin:0; font-weight:500;">{{ user.tier|default:"Premium Tier"
-                    }}</p>
+                <p style="font-size:12px;font-weight:700;color:#ba0036;letter-spacing:0.04em;text-transform:uppercase;margin:0 0 2px;">Host Management</p>
+                <p style="font-size:13px;color:#5f5e5e;margin:0;font-weight:500;">{{ user.tier|default:"Premium Tier" }}</p>
             </div>
         </div>
-        <a href="{% url 'property_add' %}" class="btn-primary"
-            style="width:100%; padding:11px; border-radius:10px; font-size:13px; text-decoration:none;">
-            <span class="material-symbols-outlined icon-sm">add</span>
-            Add New Property
+        <a href="{% url 'property_add' %}" class="btn-primary" style="width:100%;padding:11px;border-radius:10px;font-size:13px;text-decoration:none;">
+            <span class="material-symbols-outlined icon-sm">add</span> Add New Property
         </a>
     </div>
-
-    <!-- Nav links -->
-    <nav style="flex:1; padding: 4px 0;">
-        <a href="{% url 'dashboard' %}" class="nav-item {% if active_nav == 'dashboard' %}active{% endif %}">
-            <span class="material-symbols-outlined icon-sm">dashboard</span> Dashboard
-        </a>
-        <a href="{% url 'reservations' %}" class="nav-item {% if active_nav == 'reservations' %}active{% endif %}">
-            <span class="material-symbols-outlined icon-sm">event_note</span> Reservations
-        </a>
-        <a href="{% url 'properties' %}" class="nav-item {% if active_nav == 'properties' %}active{% endif %}">
-            <span class="material-symbols-outlined icon-sm">home_work</span> Properties
-        </a>
-        <a href="{% url 'earnings' %}" class="nav-item {% if active_nav == 'earnings' %}active{% endif %}">
-            <span class="material-symbols-outlined icon-sm">payments</span> Earnings
-        </a>
-        <a href="{% url 'settings' %}" class="nav-item {% if active_nav == 'settings' %}active{% endif %}">
-            <span class="material-symbols-outlined icon-sm">settings</span> Settings
-        </a>
+    <nav style="flex:1;padding:4px 0;">
+        <a href="{% url 'dashboard' %}" class="nav-item {% if active_nav == 'dashboard' %}active{% endif %}"><span class="material-symbols-outlined icon-sm">dashboard</span> Dashboard</a>
+        <a href="{% url 'reservations' %}" class="nav-item {% if active_nav == 'reservations' %}active{% endif %}"><span class="material-symbols-outlined icon-sm">event_note</span> Reservations</a>
+        <a href="{% url 'properties' %}" class="nav-item {% if active_nav == 'properties' %}active{% endif %}"><span class="material-symbols-outlined icon-sm">home_work</span> Properties</a>
+        <a href="{% url 'earnings' %}" class="nav-item {% if active_nav == 'earnings' %}active{% endif %}"><span class="material-symbols-outlined icon-sm">payments</span> Earnings</a>
+        <a href="{% url 'settings' %}" class="nav-item {% if active_nav == 'settings' %}active{% endif %}"><span class="material-symbols-outlined icon-sm">settings</span> Settings</a>
     </nav>
-
-    <!-- Bottom links -->
-    <div style="border-top:1px solid #e2e2e2; padding: 8px 0 0;">
-        <a href="{% url 'help' %}" class="nav-item">
-            <span class="material-symbols-outlined icon-sm">help</span> Help Center
-        </a>
-        <a href="{% url 'logout' %}" class="nav-item" style="color:#ba1a1a;">
-            <span class="material-symbols-outlined icon-sm">logout</span> Log Out
-        </a>
+    <div style="border-top:1px solid #e2e2e2;padding:8px 0 0;">
+        <a href="{% url 'help' %}" class="nav-item"><span class="material-symbols-outlined icon-sm">help</span> Help Center</a>
+        <a href="{% url 'logout' %}" class="nav-item" style="color:#ba1a1a;"><span class="material-symbols-outlined icon-sm">logout</span> Log Out</a>
     </div>
 </aside>
 
 <style>
-    .auth-toplink {
-        font-size: 14px;
-        font-weight: 600;
-        color: #5f5e5e;
-        text-decoration: none;
-        padding: 8px 14px;
-        border-radius: 8px;
-        border-bottom: 2px solid transparent;
-        transition: background 0.15s, color 0.15s;
-    }
-
-    .auth-toplink:hover {
-        background: #f3f3f3;
-        color: #1a1c1c;
-    }
-
-    .auth-toplink.active {
-        color: #ba0036;
-        font-weight: 700;
-        border-bottom-color: #ba0036;
-    }
-
-    .auth-icon-btn {
-        width: 38px;
-        height: 38px;
-        border-radius: 50%;
-        border: none;
-        background: transparent;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        color: #5f5e5e;
-        transition: background 0.15s;
-    }
-
-    .auth-icon-btn:hover {
-        background: #f3f3f3;
-        color: #1a1c1c;
-    }
-
-    /* Push main content past the sidebar */
-    .with-sidebar {
-        margin-left: 280px;
-        padding-top: 72px;
-    }
-
-    @media (max-width: 1024px) {
-        aside {
-            display: none;
-        }
-
-        .with-sidebar {
-            margin-left: 0;
-        }
-    }
+    .auth-toplink{font-size:14px;font-weight:600;color:#5f5e5e;text-decoration:none;padding:8px 14px;border-radius:8px;border-bottom:2px solid transparent;transition:background 0.15s,color 0.15s;}
+    .auth-toplink:hover{background:#f3f3f3;color:#1a1c1c;}
+    .auth-toplink.active{color:#ba0036;font-weight:700;border-bottom-color:#ba0036;}
+    .auth-icon-btn{width:38px;height:38px;border-radius:50%;border:none;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#5f5e5e;transition:background 0.15s;}
+    .auth-icon-btn:hover{background:#f3f3f3;color:#1a1c1c;}
+    .with-sidebar{margin-left:280px;}
+    @media(max-width:1024px){aside{display:none;}.with-sidebar{margin-left:0;}}
 </style>
 
 {% endif %}

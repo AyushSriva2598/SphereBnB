@@ -6,7 +6,7 @@ from django.db.models import Q
 from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.decorators import login_required
 from datetime import date
-from accounts.utils import bookingConfirmationEmail
+from accounts.utils import bookingConfirmationEmail,hostBookingCancellationEmail,userbookingCancellationEmail
 
 
 def index(request):
@@ -181,3 +181,30 @@ def user_profile(request):
     bookings = Booking.objects.filter(guest=request.user).order_by("-id")
 
     return render(request,"profile.html",{"bookings": bookings})
+
+@login_required(login_url='login_view')
+def cancel_reservation(request, booking_id):
+    """
+    Guest cancels their own reservation.
+    - Only the guest who made the booking can cancel it.
+    - Only confirmed/pending bookings can be cancelled (idempotency guard).
+    - POST only — never cancel on a GET (prevents accidental cancellation via prefetch).
+    """
+    if request.method != 'POST':
+        return redirect('profile_view')
+ 
+    booking = get_object_or_404(Booking, id=booking_id, guest=request.user)
+ 
+    if booking.status == 'cancelled':
+        messages.warning(request, "This reservation is already cancelled.")
+        return redirect('user_profile')
+ 
+    booking.status = 'cancelled'
+    booking.save()
+    guest_email=booking.guest.email
+    host_email= booking.hotel.hotel_owner.email
+
+    userbookingCancellationEmail(guest_email,booking)
+    hostBookingCancellationEmail(host_email,booking)
+    messages.success(request, f"Your reservation at {booking.hotel.hotel_name} has been cancelled.")
+    return redirect('user_profile')

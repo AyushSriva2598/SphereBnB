@@ -7,6 +7,7 @@ urlpatterns = [
     path('create-reservation/<slug>/',views.create_reservation,name='create_reservation'),
     path('booking/<int:booking_id>/<str:action>/', views.host_update_booking_status, name='host_update_booking_status'),
     path("profile/",views.user_profile,name="user_profile"),
+    path('bookings/<int:booking_id>/cancel/', views.cancel_reservation, name='cancel_reservation'),
     
     
 ]

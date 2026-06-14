@@ -1,6 +1,6 @@
 {% extends "utils/host/host_base.html" %}
 
-{% block title %}Log in or sign up — HostStay{% endblock %}
+{% block title %}Log in — HostStay{% endblock %}
 
 {% block nav %}
   {% include "utils/host/host_nav.html" with variant="public" %}
@@ -8,12 +8,12 @@
 
 {% block extra_head %}
 <style>
-  /* ── Two-column page layout ── */
+  /* Full-bleed layout — body already offsets for the navbar.
+     No extra padding-top needed here. */
   .login-wrap {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    min-height: 100vh;
-    padding-top: 72px; /* nav height */
+    min-height: calc(100vh - var(--nav-h, 68px));
   }
 
   /* ── LEFT: Hero panel ── */
@@ -29,11 +29,19 @@
       url('https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=900&q=80') center/cover no-repeat;
   }
   .hero-content {
-    position: relative; z-index: 2;
-    min-height: calc(100vh - 72px);
-    display: flex; flex-direction: column; justify-content: flex-end;
+    position: relative;
+    z-index: 2;
+
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    transform: translateY(-60px);
+
     padding: 48px;
-  }
+}
   .hero-badge {
     display: inline-flex; align-items: center; gap: 8px;
     background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.20);
@@ -64,42 +72,57 @@
     padding: 10px 16px; display: flex; align-items: center; gap: 10px;
     color: #fff; font-size: 13px; font-weight: 600;
   }
-  .dest-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.55); }
+  .dest-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.55); flex-shrink: 0; }
   .dest-dot.hot { background: #ffb2b6; }
 
   /* ── RIGHT: Auth panel ── */
   .auth-panel {
     display: flex; align-items: center; justify-content: center;
     padding: 48px 40px; background: #fff;
+    overflow-y: auto;
   }
   .auth-card { width: 100%; max-width: 440px; }
-  .auth-title { font-size: 26px; font-weight: 800; color: #1a1c1c; letter-spacing: -0.02em; margin-bottom: 8px; }
-  .auth-sub   { font-size: 15px; color: #5f5e5e; margin-bottom: 32px; }
 
-  /* Phone input */
-  .phone-wrap {
-    display: flex; border: 1.5px solid #e2e2e2; border-radius: 14px; overflow: hidden;
-    background: #fff; transition: border-color 0.15s, box-shadow 0.15s;
-  }
-  .phone-wrap:focus-within {
-    border-color: #1a1c1c; border-width: 2px; box-shadow: 0 0 0 3px rgba(186,0,54,0.08);
-  }
-  .country-select {
-    display: flex; align-items: center; gap: 6px; padding: 14px;
-    border-right: 1.5px solid #e2e2e2; background: #f9f9f9;
-    font-size: 14px; font-weight: 600; color: #1a1c1c; cursor: pointer; white-space: nowrap;
-  }
-  .phone-input {
-    flex: 1; border: none; outline: none; padding: 14px 16px;
-    font-family: inherit; font-size: 16px; color: #1a1c1c; background: transparent;
-  }
-  .phone-input::placeholder { color: #b0b0b0; }
+  .auth-title { font-size: 26px; font-weight: 800; color: #1a1c1c; letter-spacing: -0.02em; margin-bottom: 6px; }
+  .auth-sub   { font-size: 15px; color: #5f5e5e; margin-bottom: 28px; }
 
-  .privacy-note { font-size: 12px; color: #5f5e5e; margin-top: 10px; line-height: 1.5; }
-  .privacy-note a { color: #1a1c1c; font-weight: 700; }
+  /* ── Form fields ── */
+  .field { margin-bottom: 18px; }
+  .field label {
+    display: block; margin-bottom: 7px;
+    font-size: 12px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.05em; color: #1a1c1c;
+  }
+  .field input {
+    width: 100%; padding: 14px 16px;
+    border: 1.5px solid #e2e2e2; border-radius: 14px;
+    font-size: 15px; font-family: inherit; color: #1a1c1c;
+    outline: none; transition: border-color 0.15s, box-shadow 0.15s;
+    background: #fff;
+  }
+  .field input:focus {
+    border-color: #1a1c1c; border-width: 2px;
+    box-shadow: 0 0 0 3px rgba(186,0,54,0.08);
+  }
+  .field input::placeholder { color: #b0b0b0; }
+
+  .field-row {
+    display: flex; justify-content: space-between;
+    align-items: center; margin-bottom: 7px;
+  }
+  .field-row label {
+    font-size: 12px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.05em; color: #1a1c1c; margin: 0;
+  }
+  .otp-link {
+    font-size: 12px; font-weight: 700;
+    color: #ba0036; text-decoration: none;
+    transition: opacity 0.15s;
+  }
+  .otp-link:hover { opacity: 0.75; }
 
   .btn-continue {
-    width: 100%; padding: 15px; border-radius: 12px; margin-top: 16px;
+    width: 100%; padding: 15px; border-radius: 12px; margin-top: 4px;
     background: linear-gradient(180deg, #d4003f 0%, #ba0036 100%);
     color: #fff; font-family: inherit; font-weight: 700; font-size: 15px;
     letter-spacing: 0.02em; border: none; cursor: pointer;
@@ -107,6 +130,12 @@
   }
   .btn-continue:hover  { opacity: 0.90; }
   .btn-continue:active { transform: scale(0.99); }
+
+  .register-hint {
+    margin-top: 16px; text-align: center;
+    font-size: 14px; color: #5f5e5e;
+  }
+  .register-hint a { color: #ba0036; font-weight: 700; text-decoration: none; }
 
   /* Footer links */
   .auth-footer { border-top: 1px solid #e2e2e2; padding-top: 28px; margin-top: 32px; }
@@ -130,7 +159,6 @@
   <div class="hero-panel">
     <div class="hero-bg"></div>
 
-    <!-- Floating city cards -->
     <div class="dest-cards">
       <div class="dest-card"><div class="dest-dot hot"></div>Paris · 1,240 listings</div>
       <div class="dest-card"><div class="dest-dot"></div>Tokyo · 980 listings</div>
@@ -156,80 +184,38 @@
   <!-- ═══ RIGHT: Auth form ═══ -->
   <div class="auth-panel">
     <div class="auth-card">
+
       {% include "utils/alerts.html" %}
+
       <h1 class="auth-title anim anim-d1">Log in or sign up</h1>
-      <p class="auth-sub anim anim-d2">Welcome to HostStay - host</p>
+      <p class="auth-sub anim anim-d2">Welcome to HostStay — Host Portal</p>
 
-     <form method="POST">
-    {% csrf_token %}
+      <form method="POST" class="anim anim-d2">
+        {% csrf_token %}
 
-    <!-- Email or Phone -->
-    <div style="margin-bottom:16px;">
-        <label style="display:block; margin-bottom:8px; font-weight:600;">
-            Email or Phone Number
-        </label>
+        <div class="field">
+          <label>Email or Phone Number</label>
+          <input type="email" name="email" placeholder="you@example.com" required>
+        </div>
 
-        <input
-            type="email"
-            name="email"
-            placeholder="Enter email or phone number"
-            required
-            style="
-                width:100%;
-                padding:14px 16px;
-                border:1.5px solid #e2e2e2;
-                border-radius:14px;
-                font-size:16px;
-                outline:none;
-            "
-        >
-    </div>
-    <a href="/accounts/send-otp-host/" 
-       style="color:#ba0036; font-weight:700; text-decoration:none;">
-       Login with OTP
-    </a>
+        <div class="field">
+          <div class="field-row">
+            <label>Password</label>
+            <a href="/accounts/send-otp-host/" class="otp-link">Login with OTP instead</a>
+          </div>
+          <input type="password" name="password" placeholder="Enter your password" required>
+        </div>
 
-    <!-- Password -->
-    <div style="margin-bottom:16px;">
-        <label style="display:block; margin-bottom:8px; font-weight:600;">
-            Password
-        </label>
+        <button type="submit" class="btn-continue">Log in</button>
+      </form>
 
-        <input
-            type="password"
-            name="password"
-            placeholder="Enter password"
-            required
-            style="
-                width:100%;
-                padding:14px 16px;
-                border:1.5px solid #e2e2e2;
-                border-radius:14px;
-                font-size:16px;
-                outline:none;
-            "
-        >
-    </div>
-
-    <button type="submit" class="btn-continue">
-        Login
-    </button>
-
-</form>
-
-      <div style="margin-top:16px; text-align:center;" class="anim anim-d3">
-  <span style="font-size:14px; color:#5f5e5e;">
-    Don't have an account?
-    <a href="{% url 'host_register' %}" 
-       style="color:#ba0036; font-weight:700; text-decoration:none;">
-       Register
-    </a>
-  </span>
-</div>
+      <div class="register-hint anim anim-d3" style="margin-top:20px;">
+        Don't have an account?
+        <a href="{% url 'host_register' %}">Register</a>
+      </div>
 
       <div class="or-divider anim anim-d3" style="margin: 24px 0;">or</div>
 
-      <!-- Social -->
       <div class="anim anim-d4" style="display:flex; flex-direction:column; gap:10px;">
         <button class="btn-social">
           <span class="material-symbols-outlined" style="font-size:20px; color:#5f5e5e;">mail</span>
@@ -245,7 +231,6 @@
         </button>
       </div>
 
-      <!-- Footer links -->
       <div class="auth-footer anim anim-d5">
         <div class="footer-grid">
           <div>
@@ -253,21 +238,18 @@
             <a href="#" class="footer-link">Help Center</a>
             <a href="#" class="footer-link">Safety issue</a>
             <a href="#" class="footer-link">AirCover</a>
-            
           </div>
           <div>
             <div class="footer-col-title">Hosting</div>
             <a href="#" class="footer-link">Host your home</a>
             <a href="#" class="footer-link">Resources</a>
             <a href="#" class="footer-link">Community</a>
-            
           </div>
           <div>
             <div class="footer-col-title">Company</div>
             <a href="#" class="footer-link">Newsroom</a>
             <a href="#" class="footer-link">New features</a>
             <a href="#" class="footer-link">Careers</a>
-
           </div>
         </div>
         <div style="margin-top:20px; padding-top:16px; border-top:1px solid #e2e2e2; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
@@ -276,8 +258,8 @@
             <a href="#" class="footer-link" style="margin:0;">Privacy</a>
             <a href="#" class="footer-link" style="margin:0;">Terms</a>
             <a href="#" class="footer-link" style="margin:0;">Contact</a>
-            <a href="{% url 'login_view' %}" class="footer-link" style="margin:0;">Login_User</a>
-            <a href="{% url 'register_view' %}" class="footer-link" style="margin:0;">Register_User</a>
+            <a href="{% url 'login_view' %}" class="footer-link" style="margin:0;">Guest Login</a>
+            <a href="{% url 'register_view' %}" class="footer-link" style="margin:0;">Guest Register</a>
           </div>
         </div>
       </div>
@@ -286,8 +268,4 @@
   </div>
 
 </div>
-{% endblock %}
-
-{% block scripts %}
-
 {% endblock %}

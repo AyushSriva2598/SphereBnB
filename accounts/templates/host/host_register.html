@@ -8,244 +8,188 @@
 
 {% block extra_head %}
 <style>
-  .register-wrap{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    min-height:100vh;
-    padding-top:72px;
+  /* Full-bleed — body already handles nav offset */
+  .register-wrap {
+   display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: calc(100vh - 68px);  /* subtract nav height */
+    padding-top: 0;                   /* remove the padding-top entirely */
+    margin-top: 68px; 
   }
 
-  .hero-panel{
-    position:relative;
-    overflow:hidden;
-    background:#1a1c1c;
+  /* ── LEFT: Hero ── */
+  .hero-panel {
+    position: relative;
+    overflow: hidden;
+    background: #1a1c1c;
   }
-
-  .hero-bg{
-    position:absolute;
-    inset:0;
+  .hero-bg {
+    position: absolute; inset: 0;
     background:
       linear-gradient(135deg, rgba(186,0,54,0.82) 0%, rgba(26,28,28,0.90) 60%),
       url('https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=900&q=80') center/cover no-repeat;
   }
+  .hero-content {
+    position: relative;
+    z-index: 2;
 
-  .hero-content{
-    position:relative;
-    z-index:2;
-    min-height:calc(100vh - 72px);
-    display:flex;
-    flex-direction:column;
-    justify-content:flex-end;
-    padding:48px;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    transform: translateY(-60px);
+
+    padding: 48px;
+}
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.20);
+    border-radius: 999px; padding: 8px 16px;
+    font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.9);
+    width: fit-content; margin-bottom: 20px; backdrop-filter: blur(8px);
+  }
+  .hero-headline {
+    font-size: 42px; font-weight: 800; color: #fff;
+    line-height: 1.15; letter-spacing: -0.02em; margin-bottom: 16px;
+  }
+  .hero-sub {
+    font-size: 16px; color: rgba(255,255,255,0.70);
+    line-height: 1.6; max-width: 420px; margin-bottom: 0;
   }
 
-  .hero-badge{
-    display:inline-flex;
-    align-items:center;
-    gap:8px;
-    background:rgba(255,255,255,0.12);
-    border:1px solid rgba(255,255,255,0.20);
-    border-radius:999px;
-    padding:8px 16px;
-    font-size:13px;
-    font-weight:600;
-    color:rgba(255,255,255,0.9);
-    width:fit-content;
-    margin-bottom:20px;
-    backdrop-filter:blur(8px);
+  /* ── RIGHT: Auth panel ── */
+  .auth-panel {
+    display: flex; align-items: center; justify-content: center;
+    padding: 48px 40px; background: #fff;
+    overflow-y: auto;
   }
+  .auth-card { width: 100%; max-width: 460px; }
 
-  .hero-headline{
-    font-size:42px;
-    font-weight:800;
-    color:#fff;
-    line-height:1.15;
-    margin-bottom:16px;
+  .auth-title { font-size: 28px; font-weight: 800; color: #1a1c1c; letter-spacing: -0.02em; margin-bottom: 6px; }
+  .auth-sub   { font-size: 15px; color: #5f5e5e; margin-bottom: 28px; }
+
+  /* ── Fields ── */
+  .field { margin-bottom: 16px; }
+  .field label {
+    display: block; margin-bottom: 7px;
+    font-size: 12px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.05em; color: #1a1c1c;
   }
-
-  .hero-sub{
-    font-size:16px;
-    color:rgba(255,255,255,0.7);
-    line-height:1.6;
-    max-width:420px;
-    margin-bottom:36px;
+  .field input {
+    width: 100%; padding: 14px 16px;
+    border: 1.5px solid #e2e2e2; border-radius: 14px;
+    font-size: 15px; font-family: inherit; color: #1a1c1c;
+    outline: none; background: #fff;
+    transition: border-color 0.15s, box-shadow 0.15s;
   }
-
-  .auth-panel{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:48px 40px;
-    background:#fff;
+  .field input:focus {
+    border-color: #1a1c1c; border-width: 2px;
+    box-shadow: 0 0 0 3px rgba(186,0,54,0.08);
   }
+  .field input::placeholder { color: #b0b0b0; }
 
-  .auth-card{
-    width:100%;
-    max-width:460px;
+  /* Two-column row for name fields */
+  .field-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  .btn-register {
+    width: 100%; padding: 15px; border: none; border-radius: 14px; margin-top: 8px;
+    background: linear-gradient(180deg, #d4003f 0%, #ba0036 100%);
+    color: #fff; font-size: 15px; font-weight: 700; font-family: inherit;
+    cursor: pointer; transition: opacity 0.15s, transform 0.1s;
   }
+  .btn-register:hover  { opacity: 0.92; }
+  .btn-register:active { transform: scale(0.99); }
 
-  .auth-title{
-    font-size:28px;
-    font-weight:800;
-    color:#1a1c1c;
-    margin-bottom:8px;
+  .login-hint {
+    margin-top: 20px; text-align: center;
+    font-size: 14px; color: #5f5e5e;
   }
+  .login-hint a { color: #ba0036; text-decoration: none; font-weight: 700; }
 
-  .auth-sub{
-    font-size:15px;
-    color:#5f5e5e;
-    margin-bottom:32px;
+  @media (max-width: 768px) {
+    .register-wrap { grid-template-columns: 1fr; }
+    .hero-panel { display: none; }
+    .auth-panel { padding: 32px 20px; }
+    .field-row-2 { grid-template-columns: 1fr; }
   }
-
-  .input-group{
-    margin-bottom:18px;
-  }
-
-  .input-label{
-    display:block;
-    margin-bottom:8px;
-    font-size:14px;
-    font-weight:700;
-    color:#1a1c1c;
-  }
-
-  .form-input{
-    width:100%;
-    padding:15px 16px;
-    border:1.5px solid #e2e2e2;
-    border-radius:14px;
-    font-size:15px;
-    font-family:inherit;
-    outline:none;
-    transition:0.15s;
-    box-sizing:border-box;
-  }
-
-  .form-input:focus{
-    border-color:#1a1c1c;
-    border-width:2px;
-    box-shadow:0 0 0 3px rgba(186,0,54,0.08);
-  }
-
-  .btn-register{
-    width:100%;
-    padding:15px;
-    border:none;
-    border-radius:14px;
-    background:linear-gradient(180deg,#d4003f 0%, #ba0036 100%);
-    color:#fff;
-    font-size:15px;
-    font-weight:700;
-    cursor:pointer;
-    margin-top:10px;
-  }
-
-  .btn-register:hover{
-    opacity:0.92;
-  }
-
-  .login-link{
-    margin-top:20px;
-    text-align:center;
-    font-size:14px;
-    color:#5f5e5e;
-  }
-
-  .login-link a{
-    color:#ba0036;
-    text-decoration:none;
-    font-weight:700;
-  }
-
-  @media(max-width:768px){
-    .register-wrap{
-      grid-template-columns:1fr;
-    }
-
-    .hero-panel{
-      display:none;
-    }
-
-    .auth-panel{
-      padding:32px 20px;
-    }
-  }
+  body {
+    padding-top: 0 !important;
+}
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="register-wrap">
 
+  <!-- ═══ LEFT: Hero ═══ -->
   <div class="hero-panel">
     <div class="hero-bg"></div>
-
     <div class="hero-content">
       <div class="hero-badge">
-        <span class="material-symbols-outlined icon-fill" style="font-size:16px; color:#ffb2b6;">
-          verified
-        </span>
+        <span class="material-symbols-outlined icon-fill" style="font-size:16px; color:#ffb2b6;">verified</span>
         Join the next generation of hosts
       </div>
-
-      <h1 class="hero-headline">
-        Start hosting.<br>
-        Build income.
-      </h1>
-
-      <p class="hero-sub">
-        Create your HostStay account and start managing properties,
-        bookings, and guests from one unified platform.
-      </p>
+      <h1 class="hero-headline">Start hosting.<br>Build income.</h1>
+      <p class="hero-sub">Create your HostStay account and start managing properties, bookings, and guests from one unified platform.</p>
     </div>
   </div>
 
+  <!-- ═══ RIGHT: Register form ═══ -->
   <div class="auth-panel">
     <div class="auth-card">
-      {% include "utils/alerts.html" %}
-      <h1 class="auth-title">Create your account</h1>
-      <p class="auth-sub">Sign up to continue to HostStay</p>
 
-      <form method="POST">
+      {% include "utils/alerts.html" %}
+
+      <h1 class="auth-title anim anim-d1">Create your account</h1>
+      <p class="auth-sub anim anim-d2">Sign up to continue to HostStay</p>
+
+      <form method="POST" class="anim anim-d2">
         {% csrf_token %}
 
-        <div class="input-group">
-          <label class="input-label">Full Name</label>
-          <input type="text" name="name" class="form-input" placeholder="Enter your full name">
+        <div class="field-row-2">
+          <div class="field">
+            <label>First Name</label>
+            <input type="text" name="first_name" placeholder="Jane">
+          </div>
+          <div class="field">
+            <label>Last Name</label>
+            <input type="text" name="last_name" placeholder="Smith">
+          </div>
         </div>
 
-        <div class="input-group">
-          <label class="input-label">Email Address</label>
-          <input type="email" name="email" class="form-input" placeholder="Enter your email">
+        <div class="field">
+          <label>Email Address</label>
+          <input type="email" name="email" placeholder="you@example.com">
         </div>
 
-        <div class="input-group">
-          <label class="input-label">Phone Number</label>
-          <input type="tel" name="phone_number" class="form-input" placeholder="Enter your phone number">
+        <div class="field">
+          <label>Phone Number</label>
+          <input type="tel" name="phone_number" placeholder="+91 98765 43210">
         </div>
 
-        <div class="input-group">
-          <label class="input-label">Business Name</label>
-          <input type="tel" name="business_name" class="form-input" placeholder="Enter your business name">
+        <div class="field">
+          <label>Business Name</label>
+          <input type="text" name="business_name" placeholder="Your property or company name">
         </div>
 
-        <div class="input-group">
-          <label class="input-label">Password</label>
-          <input type="password" name="password" class="form-input" placeholder="Create password">
+        <div class="field-row-2">
+          <div class="field">
+            <label>Password</label>
+            <input type="password" name="password" placeholder="Create password">
+          </div>
+          <div class="field">
+            <label>Confirm Password</label>
+            <input type="password" name="confirm_password" placeholder="Repeat password">
+          </div>
         </div>
 
-        <div class="input-group">
-          <label class="input-label">Confirm Password</label>
-          <input type="password" name="confirm_password" class="form-input" placeholder="Confirm password">
-        </div>
-
-        <button type="submit" class="btn-register">
-          Create Account
-        </button>
+        <button type="submit" class="btn-register">Create Account</button>
       </form>
 
-      <div class="login-link">
-        Already have an account?
-        <a href="{% url 'host_login' %}">Log in</a>
+      <div class="login-hint anim anim-d3">
+        Already have an account? <a href="{% url 'host_login' %}">Log in</a>
       </div>
 
     </div>

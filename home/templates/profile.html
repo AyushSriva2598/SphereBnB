@@ -1,284 +1,614 @@
 {% extends "utils/base.html" %}
 {% load static %}
 
-{% block title %}
-My Profile
-{% endblock %}
+{% block title %}My Profile{% endblock %}
 
 {% block nav %}
 {% include "utils/nav.html" with variant="public" %}
 {% endblock %}
 
 {% block extra_head %}
-
 <style>
 
-.profile-wrapper{
-    max-width:1200px;
-    margin:0 auto;
-    padding:110px 32px 40px;
+/* ── Layout ── */
+.profile-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 28px 32px 60px;
 }
 
-.profile-grid{
-    display:grid;
-    grid-template-columns:320px 1fr;
-    gap:24px;
-    align-items:start;
+.profile-grid {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 24px;
+    align-items: start;
 }
 
-.profile-card{
-    background:#fff;
-    border:1px solid #ececec;
-    border-radius:18px;
-    padding:28px 24px;
-    text-align:center;
+/* ── Profile card ── */
+.profile-card {
+    background: #fff;
+    border: 1px solid #ececec;
+    border-radius: 18px;
+    padding: 28px 24px;
+    text-align: center;
+    position: sticky;
+    top: calc(var(--nav-h, 64px) + 20px);
 }
 
-.profile-avatar{
-    width:84px;
-    height:84px;
-    border-radius:50%;
-    background:linear-gradient(135deg, #ba0036, #e0457a);
-    color:white;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:32px;
-    font-weight:700;
-    margin:0 auto 16px;
+.profile-avatar {
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ba0036, #e0457a);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    font-weight: 700;
+    margin: 0 auto 16px;
 }
 
-.profile-name{
-    font-size:19px;
-    font-weight:800;
-    color:#1a1c1c;
-    margin-bottom:4px;
+.profile-name {
+    font-size: 19px;
+    font-weight: 800;
+    color: #1a1c1c;
+    margin-bottom: 4px;
 }
 
-.profile-email{
-    color:#8a8a8a;
-    font-size:13px;
-    margin-bottom:24px;
-    word-break:break-word;
+.profile-email {
+    color: #8a8a8a;
+    font-size: 13px;
+    margin-bottom: 24px;
+    word-break: break-word;
 }
 
-.profile-stats{
-    display:flex;
-    border-top:1px solid #ececec;
-    padding-top:20px;
-    margin-bottom:24px;
+.profile-stats {
+    display: flex;
+    border-top: 1px solid #ececec;
+    padding-top: 20px;
+    margin-bottom: 24px;
 }
 
-.profile-stat{
-    flex:1;
+.profile-stat { flex: 1; }
+
+.profile-stat + .profile-stat { border-left: 1px solid #ececec; }
+
+.profile-stat-label {
+    font-size: 12px;
+    color: #8a8a8a;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
 }
 
-.profile-stat + .profile-stat{
-    border-left:1px solid #ececec;
+.profile-stat-value {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1a1c1c;
 }
 
-.profile-stat-label{
-    font-size:12px;
-    color:#8a8a8a;
-    margin-bottom:4px;
-    text-transform:uppercase;
-    letter-spacing:0.04em;
+.logout-btn {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    padding: 12px;
+    border-radius: 999px;
 }
 
-.profile-stat-value{
-    font-size:16px;
-    font-weight:700;
-    color:#1a1c1c;
-    word-break:break-word;
+/* ── Bookings card ── */
+.bookings-card {
+    background: #fff;
+    border: 1px solid #ececec;
+    border-radius: 18px;
+    padding: 24px;
 }
 
-.logout-btn{
-    width:100%;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:8px;
-    text-decoration:none;
-    padding:12px;
-    border-radius:999px;
+.section-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: #1a1c1c;
+    margin-bottom: 4px;
 }
 
-.bookings-card{
-    background:#fff;
-    border:1px solid #ececec;
-    border-radius:18px;
-    padding:24px;
+.section-subtitle {
+    font-size: 13px;
+    color: #8a8a8a;
+    margin-bottom: 20px;
 }
 
-.section-title{
-    font-size:20px;
-    font-weight:800;
-    color:#1a1c1c;
-    margin-bottom:4px;
+/* ── Booking row — clickable ── */
+.booking-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 14px;
+    border-radius: 12px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.15s, border-color 0.15s;
+    margin: 0 -14px;
 }
 
-.section-subtitle{
-    font-size:13px;
-    color:#8a8a8a;
-    margin-bottom:20px;
+.booking-row:hover {
+    background: #fafafa;
+    border-color: #ebebeb;
 }
 
-.booking-row{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:16px;
-    padding:18px 0;
-    border-bottom:1px solid #ececec;
+.booking-row + .booking-row {
+    margin-top: 4px;
 }
 
-.booking-row:last-child{
-    border-bottom:none;
-    padding-bottom:0;
+.booking-info { min-width: 0; }
+
+.booking-hotel {
+    font-weight: 700;
+    font-size: 15px;
+    color: #1a1c1c;
+    margin-bottom: 5px;
 }
 
-.booking-info{
-    min-width:0;
+.booking-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #8a8a8a;
 }
 
-.booking-title{
-    font-weight:700;
-    font-size:15px;
-    color:#1a1c1c;
-    margin-bottom:6px;
+.booking-meta-guests {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 4px;
+    font-size: 12px;
+    color: #aaa;
 }
 
-.booking-meta{
-    display:flex;
-    align-items:center;
-    gap:6px;
-    font-size:13px;
-    color:#8a8a8a;
+.booking-row-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    flex-shrink: 0;
 }
 
-.booking-status{
-    flex-shrink:0;
-    padding:6px 14px;
-    border-radius:999px;
-    font-size:12px;
-    font-weight:700;
-    text-transform:capitalize;
+.booking-status {
+    padding: 5px 13px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: capitalize;
+    white-space: nowrap;
 }
 
-.status-pending{
-    background:rgba(230, 162, 0, .1);
-    color:#b6840a;
+.status-pending   { background: rgba(230,162,0,.10); color: #b6840a; }
+.status-confirmed { background: rgba(30,125,30,.10);  color: #1e7d1e; }
+.status-cancelled { background: rgba(186,0,54,.08);   color: #ba0036; }
+
+.booking-chevron {
+    color: #ccc;
+    font-size: 18px;
+    transition: transform 0.15s;
 }
 
-.status-confirmed{
-    background:rgba(30, 125, 30, .1);
-    color:#1e7d1e;
+.booking-row:hover .booking-chevron {
+    transform: translateX(2px);
+    color: #999;
 }
 
-.status-cancelled{
-    background:rgba(186, 0, 54, .08);
-    color:#ba0036;
+.empty-bookings {
+    text-align: center;
+    padding: 48px 24px;
+    color: #8a8a8a;
+    font-size: 14px;
 }
 
-.empty-bookings{
-    text-align:center;
-    padding:48px 24px;
-    color:#8a8a8a;
-    font-size:14px;
+/* ══════════════════════════════════════
+   BOOKING DETAIL DRAWER
+   Half-page slide-up over blurred bg
+══════════════════════════════════════ */
+.drawer-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: rgba(26, 28, 28, 0.45);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    align-items: flex-end;
+    justify-content: center;
 }
 
-@media(max-width:900px){
+.drawer-backdrop.open {
+    display: flex;
+    animation: backdropIn 0.25s ease both;
+}
 
-    .profile-grid{
-        grid-template-columns:1fr;
-    }
+@keyframes backdropIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
 
+.drawer {
+    background: #fff;
+    border-radius: 24px 24px 0 0;
+    width: 100%;
+    max-width: 680px;
+    padding: 0 0 40px;
+    box-shadow: 0 -12px 48px rgba(0,0,0,0.14);
+    animation: drawerUp 0.3s cubic-bezier(0.32, 0.72, 0, 1) both;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+@keyframes drawerUp {
+    from { transform: translateY(40px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* Drag handle */
+.drawer-handle {
+    display: flex;
+    justify-content: center;
+    padding: 14px 0 8px;
+}
+
+.drawer-handle-bar {
+    width: 40px;
+    height: 4px;
+    border-radius: 99px;
+    background: #e0e0e0;
+}
+
+.drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 8px 28px 20px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.drawer-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: #1a1c1c;
+    margin-bottom: 3px;
+}
+
+.drawer-subtitle {
+    font-size: 13px;
+    color: #8a8a8a;
+}
+
+.drawer-close {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: #f3f3f3;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-left: 12px;
+    transition: background 0.15s;
+    color: #1a1c1c;
+}
+
+.drawer-close:hover { background: #e8e8e8; }
+
+.drawer-body {
+    padding: 24px 28px;
+}
+
+/* Detail rows inside drawer */
+.detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.detail-block {
+    background: #f9f9f9;
+    border-radius: 12px;
+    padding: 14px 16px;
+}
+
+.detail-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #aaa;
+    margin-bottom: 4px;
+}
+
+.detail-value {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1a1c1c;
+}
+
+.detail-value.green { color: #1e7d1e; }
+.detail-value.amber { color: #b6840a; }
+.detail-value.red   { color: #ba0036; }
+
+/* Cancel section */
+.cancel-section {
+    border-top: 1px solid #f0f0f0;
+    padding-top: 20px;
+    margin-top: 4px;
+}
+
+.cancel-warning {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    background: rgba(186,0,54,0.06);
+    border: 1px solid rgba(186,0,54,0.14);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    color: #7a002a;
+    line-height: 1.55;
+}
+
+.cancel-warning .material-symbols-outlined {
+    color: #ba0036;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.cancel-btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 999px;
+    background: #ba0036;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: opacity 0.15s, transform 0.1s;
+}
+
+.cancel-btn:hover   { opacity: 0.88; }
+.cancel-btn:active  { transform: scale(0.98); }
+
+.already-cancelled {
+    text-align: center;
+    padding: 16px;
+    font-size: 14px;
+    color: #ba0036;
+    font-weight: 600;
+    background: rgba(186,0,54,0.06);
+    border-radius: 12px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+    .profile-grid { grid-template-columns: 1fr; }
+    .profile-card { position: static; }
+    .profile-wrapper { padding: 20px 16px 48px; }
+    .detail-grid { grid-template-columns: 1fr 1fr; }
+    .drawer { border-radius: 20px 20px 0 0; }
+}
+
+@media (max-width: 480px) {
+    .detail-grid { grid-template-columns: 1fr 1fr; }
+    .drawer-header, .drawer-body { padding-left: 20px; padding-right: 20px; }
 }
 </style>
-
 {% endblock %}
 
 {% block content %}
 
 <div class="profile-wrapper">
-
     <div class="profile-grid">
 
+        <!-- ── Profile card ── -->
         <div class="profile-card">
-
-            <div class="profile-avatar">
-                {{ user.first_name|first|upper }}
-            </div>
-
-            <div class="profile-name">
-                {{ user.get_full_name|default:user.username }}
-            </div>
-
-            <div class="profile-email">
-                {{ user.email }}
-            </div>
+            <div class="profile-avatar">{{ user.first_name|first|upper }}</div>
+            <div class="profile-name">{{ user.get_full_name|default:user.username }}</div>
+            <div class="profile-email">{{ user.email }}</div>
 
             <div class="profile-stats">
-
                 <div class="profile-stat">
                     <div class="profile-stat-label">Username</div>
                     <div class="profile-stat-value">{{ user.username }}</div>
                 </div>
-
                 <div class="profile-stat">
                     <div class="profile-stat-label">Bookings</div>
                     <div class="profile-stat-value">{{ bookings.count }}</div>
                 </div>
-
             </div>
 
             <a href="{% url 'logout_view' %}" class="btn-primary logout-btn">
                 <span class="material-symbols-outlined icon-sm">logout</span>
                 Logout
             </a>
-
         </div>
 
+        <!-- ── Bookings card ── -->
         <div class="bookings-card">
-
             <h2 class="section-title">My Bookings</h2>
-            <p class="section-subtitle">A history of your stays and reservations.</p>
+            <p class="section-subtitle">Tap any booking to view details or cancel.</p>
 
             {% for booking in bookings %}
-
-            <div class="booking-row">
+            <div class="booking-row"
+                 onclick="openDrawer(this)"
+                 data-id="{{ booking.id }}"
+                 data-hotel="{{ booking.hotel.hotel_name }}"
+                 data-location="{{ booking.hotel.hotel_location }}"
+                 data-checkin="{{ booking.check_in }}"
+                 data-checkout="{{ booking.check_out }}"
+                 data-guests="{{ booking.guests }}"
+                 data-status="{{ booking.status }}"
+                 data-status-display="{{ booking.get_status_display }}">
 
                 <div class="booking-info">
-
-                    <div class="booking-title">
-                        {{ booking.hotel.hotel_name }}
-                    </div>
-
+                    <div class="booking-hotel">{{ booking.hotel.hotel_name }}</div>
                     <div class="booking-meta">
-                        <span class="material-symbols-outlined icon-sm" style="font-size:16px;">calendar_month</span>
+                        <span class="material-symbols-outlined icon-sm" style="font-size:15px;">calendar_month</span>
                         {{ booking.check_in }} → {{ booking.check_out }}
                     </div>
-
+                    <div class="booking-meta-guests">
+                        <span class="material-symbols-outlined" style="font-size:14px;">group</span>
+                        {{ booking.guests }} guest{{ booking.guests|pluralize }}
+                    </div>
                 </div>
 
-                <span class="booking-status status-{{ booking.status }}">
-                    {{ booking.get_status_display }}
-                </span>
-
+                <div class="booking-row-right">
+                    <span class="booking-status status-{{ booking.status }}">
+                        {{ booking.get_status_display }}
+                    </span>
+                    <span class="material-symbols-outlined booking-chevron">chevron_right</span>
+                </div>
             </div>
-
             {% empty %}
-
             <div class="empty-bookings">
                 <p>No bookings yet. Once you reserve a stay, it'll show up here.</p>
             </div>
-
             {% endfor %}
 
         </div>
-
     </div>
-
 </div>
+
+<!-- ══════════════════════════════════════
+     BOOKING DETAIL DRAWER
+══════════════════════════════════════ -->
+<div class="drawer-backdrop" id="drawerBackdrop" onclick="handleBackdropClick(event)">
+    <div class="drawer" id="drawer">
+
+        <div class="drawer-handle">
+            <div class="drawer-handle-bar"></div>
+        </div>
+
+        <div class="drawer-header">
+            <div>
+                <div class="drawer-title" id="drawerHotel">—</div>
+                <div class="drawer-subtitle" id="drawerLocation">—</div>
+            </div>
+            <button class="drawer-close" onclick="closeDrawer()" aria-label="Close">
+                <span class="material-symbols-outlined" style="font-size:20px;">close</span>
+            </button>
+        </div>
+
+        <div class="drawer-body">
+
+            <div class="detail-grid">
+                <div class="detail-block">
+                    <div class="detail-label">Check-in</div>
+                    <div class="detail-value" id="drawerCheckin">—</div>
+                </div>
+                <div class="detail-block">
+                    <div class="detail-label">Check-out</div>
+                    <div class="detail-value" id="drawerCheckout">—</div>
+                </div>
+                <div class="detail-block">
+                    <div class="detail-label">Guests</div>
+                    <div class="detail-value" id="drawerGuests">—</div>
+                </div>
+                <div class="detail-block">
+                    <div class="detail-label">Status</div>
+                    <div class="detail-value" id="drawerStatus">—</div>
+                </div>
+            </div>
+
+            <!-- Cancel section — shown only if not already cancelled -->
+            <div class="cancel-section" id="cancelSection">
+
+                <div class="cancel-warning">
+                    <span class="material-symbols-outlined icon-sm">info</span>
+                    Cancelling will immediately free up these dates for other guests.
+                    This action cannot be undone.
+                </div>
+
+                <form id="cancelForm" method="post" action="">
+                    {% csrf_token %}
+                    <button type="submit" class="cancel-btn">
+                        Cancel Reservation
+                    </button>
+                </form>
+
+            </div>
+
+            <div class="already-cancelled" id="alreadyCancelled" style="display:none;">
+                This reservation has already been cancelled.
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+const backdrop    = document.getElementById('drawerBackdrop');
+const cancelForm  = document.getElementById('cancelForm');
+const cancelSec   = document.getElementById('cancelSection');
+const alreadyMsg  = document.getElementById('alreadyCancelled');
+const statusColors = {
+    confirmed: 'green',
+    pending:   'amber',
+    cancelled: 'red',
+};
+
+function openDrawer(row) {
+    const id            = row.dataset.id;
+    const status        = row.dataset.status;
+    const statusDisplay = row.dataset.statusDisplay;
+
+    // Populate fields
+    document.getElementById('drawerHotel').textContent    = row.dataset.hotel;
+    document.getElementById('drawerLocation').textContent = row.dataset.location;
+    document.getElementById('drawerCheckin').textContent  = row.dataset.checkin;
+    document.getElementById('drawerCheckout').textContent = row.dataset.checkout;
+    document.getElementById('drawerGuests').textContent   =
+        row.dataset.guests + ' guest' + (row.dataset.guests == 1 ? '' : 's');
+
+    const statusEl = document.getElementById('drawerStatus');
+    statusEl.textContent = statusDisplay;
+    statusEl.className   = 'detail-value ' + (statusColors[status] || '');
+
+    // Show cancel button only for active bookings
+    if (status === 'cancelled') {
+        cancelSec.style.display  = 'none';
+        alreadyMsg.style.display = 'block';
+    } else {
+        cancelSec.style.display  = 'block';
+        alreadyMsg.style.display = 'none';
+        cancelForm.action = `/bookings/${id}/cancel/`;
+    }
+
+    backdrop.classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeDrawer() {
+    backdrop.classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+function handleBackdropClick(e) {
+    // Close only if clicking the dark backdrop, not the drawer itself
+    if (e.target === backdrop) closeDrawer();
+}
+
+// Escape key closes
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeDrawer();
+});
+</script>
 
 {% endblock %}

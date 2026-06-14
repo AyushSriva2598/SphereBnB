@@ -1,9 +1,9 @@
-{% extends "utils/host/host_base.html" %}
+{% extends "utils/base.html" %}
 {% load static %}
 {% block title %}Reserve — {{ hotel.hotel_name }}{% endblock %}
 
 {% block nav %}
-{% include "utils/host/host_nav.html" with variant="public" %}{% endblock %}
+{% include "utils/nav.html" with variant="public" %}{% endblock %}
 
 {% block extra_head %}
 

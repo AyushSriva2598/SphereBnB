@@ -603,12 +603,20 @@
     opacity:1;
     visibility:visible;
 }
+:root {
+    --nav-h: 64px;  /* whatever height your guest navbar actually is */
+}
+body {
+    /* existing styles... */
+    padding-top: var(--nav-h);  /* ADD THIS */
+}
   </style>
 
   {% block extra_head %}{% endblock %}
 </head>
 
 <body>
+  
   {% if messages %}
   <div class="messages-container">
     {% for message in messages %}
