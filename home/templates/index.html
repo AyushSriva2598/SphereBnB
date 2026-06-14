@@ -70,7 +70,8 @@
 
     .search-wrapper {
         max-width: 1280px;
-        margin: 110px auto 20px;
+        margin: 24px auto 20px;
+        /* ← change 110px to 24px */
         padding: 0 32px;
     }
 
@@ -135,6 +136,16 @@
     .hotel-card {
         cursor: pointer;
     }
+
+    body {
+        padding-top: 0 !important;
+    }
+
+    .search-wrapper {
+        max-width: 1280px;
+        margin: 24px auto 20px;
+        padding: 0 32px;
+    }
 </style>
 {% endblock %}
 
@@ -186,7 +197,8 @@
             <div class="hotel-image">
 
                 {% if image %}
-                <img src="https://res.cloudinary.com/dmtmcjjrk/image/upload/{{ image.image }}" alt="{{ hotel.hotel_name }}">
+                <img src="https://res.cloudinary.com/dmtmcjjrk/image/upload/{{ image.image }}"
+                    alt="{{ hotel.hotel_name }}">
                 {% else %}
                 <img src="{% static 'accounts/images/default-hotel.jpg' %}" alt="Hotel">
                 {% endif %}

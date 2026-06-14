@@ -1,646 +1,227 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "utils/base.html" %}
+{% load static %}
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{% block title %}HostStay{% endblock %}</title>
+{% block title %}HostStay{% endblock %}
 
-  <!-- ── Fonts ── -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
-    rel="stylesheet" />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
-    rel="stylesheet" />
+{% block nav %}
+{% include "utils/nav.html" with variant="public" %}
+{% endblock %}
 
-  <!-- ── Tailwind CDN + Design Tokens ── -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Plus Jakarta Sans', 'sans-serif'],
-          },
-          colors: {
-            'primary': '#ba0036',
-            'primary-container': '#e21e4a',
-            'on-primary': '#ffffff',
-            'on-primary-container': '#fffbff',
-            'inverse-primary': '#ffb2b6',
-            'primary-fixed': '#ffdada',
-            'primary-fixed-dim': '#ffb2b6',
-            'on-primary-fixed': '#40000d',
-            'on-primary-fixed-variant': '#920029',
-            'secondary': '#5f5e5e',
-            'secondary-container': '#e2dfde',
-            'on-secondary': '#ffffff',
-            'on-secondary-container': '#636262',
-            'secondary-fixed': '#e5e2e1',
-            'secondary-fixed-dim': '#c8c6c5',
-            'on-secondary-fixed': '#1b1c1c',
-            'on-secondary-fixed-variant': '#474746',
-            'tertiary': '#5c5c5c',
-            'tertiary-container': '#747474',
-            'on-tertiary': '#ffffff',
-            'on-tertiary-container': '#fefcfc',
-            'tertiary-fixed': '#e3e2e2',
-            'tertiary-fixed-dim': '#c7c6c6',
-            'on-tertiary-fixed': '#1b1c1c',
-            'on-tertiary-fixed-variant': '#464747',
-            'surface': '#f9f9f9',
-            'surface-dim': '#dadada',
-            'surface-bright': '#f9f9f9',
-            'surface-container-lowest': '#ffffff',
-            'surface-container-low': '#f3f3f3',
-            'surface-container': '#eeeeee',
-            'surface-container-high': '#e8e8e8',
-            'surface-container-highest': '#e2e2e2',
-            'surface-variant': '#e2e2e2',
-            'surface-tint': '#be0038',
-            'on-surface': '#1a1c1c',
-            'on-surface-variant': '#5c3f41',
-            'inverse-surface': '#2f3131',
-            'inverse-on-surface': '#f1f1f1',
-            'outline': '#906f70',
-            'outline-variant': '#e5bdbe',
-            'background': '#f9f9f9',
-            'on-background': '#1a1c1c',
-            'error': '#ba1a1a',
-            'on-error': '#ffffff',
-            'error-container': '#ffdad6',
-            'on-error-container': '#93000a',
-          },
-          spacing: {
-            'unit': '8px',
-            'gutter': '24px',
-            'margin-mobile': '16px',
-            'margin-desktop': '80px',
-            'sidebar-width': '280px',
-            'auth-card': '560px',
-            'container-max': '1280px',
-          },
-          borderRadius: {
-            DEFAULT: '0.5rem',
-            sm: '0.25rem',
-            md: '0.75rem',
-            lg: '1rem',
-            xl: '1.5rem',
-            full: '9999px',
-          },
-          maxWidth: {
-            'container-max': '1280px',
-            'auth-card': '560px',
-          },
-          width: {
-            'sidebar': '280px',
-          },
-          fontSize: {
-            'display-lg': ['32px', { lineHeight: '1.2', fontWeight: '700' }],
-            'display-lg-mobile': ['26px', { lineHeight: '1.2', fontWeight: '700' }],
-            'headline-md': ['22px', { lineHeight: '1.3', fontWeight: '600' }],
-            'body-lg': ['18px', { lineHeight: '1.5', fontWeight: '400' }],
-            'body-md': ['16px', { lineHeight: '1.5', fontWeight: '400' }],
-            'body-sm': ['14px', { lineHeight: '1.4', fontWeight: '400' }],
-            'label-bold': ['12px', { lineHeight: '1.2', fontWeight: '700', letterSpacing: '0.05em' }],
-          },
-          boxShadow: {
-            'card': '0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)',
-            'hover': '0 6px 16px rgba(0,0,0,0.12)',
-            'modal': '0 12px 40px rgba(0,0,0,0.15)',
-            'auth': '0 6px 24px rgba(186,0,54,0.08), 0 2px 8px rgba(0,0,0,0.06)',
-          },
-        },
-      },
-    };
-  </script>
-
-  <!-- ── Shared Component Styles ── -->
-  <style>
-    /* Reset */
-    *,
-    *::before,
-    *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
+{% block extra_head %}
+<style>
+    .hotel-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 24px;
     }
 
-    html {
-      scroll-behavior: smooth;
+    .hotel-card {
+        background: #fff;
+        border-radius: 18px;
+        overflow: hidden;
+        border: 1px solid #e5e5e5;
+        transition: .2s;
     }
 
-    body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      background-color: #f9f9f9;
-      color: #1a1c1c;
-      -webkit-font-smoothing: antialiased;
-      min-height: 100vh;
+    .hotel-card:hover {
+        transform: translateY(-4px);
     }
 
-    /* Material Symbols */
-    .material-symbols-outlined {
-      font-family: 'Material Symbols Outlined';
-      font-weight: normal;
-      font-style: normal;
-      font-size: 24px;
-      line-height: 1;
-      display: inline-block;
-      white-space: nowrap;
-      direction: ltr;
-      -webkit-font-smoothing: antialiased;
-      vertical-align: middle;
-      user-select: none;
+    .hotel-image {
+        width: 100%;
+        height: 220px;
+        overflow: hidden;
     }
 
-    .icon-fill {
-      font-variation-settings: 'FILL' 1;
+    .hotel-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
     }
 
-    .icon-xs {
-      font-size: 16px;
+    .hotel-content {
+        padding: 18px;
     }
 
-    .icon-sm {
-      font-size: 18px;
+    .hotel-name {
+        font-size: 18px;
+        font-weight: 700;
+        color: #1a1c1c;
+        margin-bottom: 8px;
     }
 
-    .icon-lg {
-      font-size: 28px;
+    .hotel-location {
+        font-size: 14px;
+        color: #5f5e5e;
+        margin-bottom: 12px;
     }
 
-    /* Buttons */
-    .btn-primary {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      background: linear-gradient(180deg, #d4003f 0%, #ba0036 100%);
-      color: #fff;
-      font-family: inherit;
-      font-weight: 700;
-      font-size: 14px;
-      letter-spacing: 0.03em;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: opacity 0.15s, transform 0.1s;
+    .hotel-price {
+        font-size: 18px;
+        font-weight: 800;
+        color: #ba0036;
     }
 
-    .btn-primary:hover {
-      opacity: 0.91;
+    .hotel-price span {
+        font-size: 14px;
+        color: #5f5e5e;
+        font-weight: 500;
     }
 
-    .btn-primary:active {
-      transform: scale(0.98);
+    .search-wrapper {
+        max-width: 1280px;
+        margin: 110px auto 20px;
+        padding: 0 32px;
     }
 
-    .btn-secondary {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      background: transparent;
-      color: #1a1c1c;
-      font-family: inherit;
-      font-weight: 700;
-      font-size: 14px;
-      border: 1.5px solid #1a1c1c;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: background 0.15s;
+    .search-form {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
     }
 
-    .btn-secondary:hover {
-      background: #f3f3f3;
+    .search-form input,
+    .search-form select {
+        padding: 14px;
+        border: 1px solid #ddd;
+        border-radius: 12px;
+        font-size: 14px;
+        outline: none;
     }
 
-    .btn-ghost {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: transparent;
-      border: none;
-      color: #5f5e5e;
-      font-family: inherit;
-      font-weight: 600;
-      font-size: 14px;
-      cursor: pointer;
-      transition: color 0.15s;
+    .search-form button {
+        border: none;
+        cursor: pointer;
+        padding: 0 24px;
     }
 
-    .btn-ghost:hover {
-      color: #1a1c1c;
+    .hotel-grid {
+        padding: 0 32px 40px;
     }
 
-    .btn-social {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      width: 100%;
-      padding: 13px 20px;
-      background: #fff;
-      border: 1.5px solid #e2e2e2;
-      border-radius: 12px;
-      font-family: inherit;
-      font-size: 14px;
-      font-weight: 600;
-      color: #1a1c1c;
-      cursor: pointer;
-      transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
+    @media(max-width:900px) {
+
+        .search-form {
+            grid-template-columns: 1fr;
+        }
+
     }
 
-    .btn-social:hover {
-      background: #f9f9f9;
-      border-color: #b0b0b0;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    .btn-clear {
+        padding: 14px 24px;
+        border-radius: 12px;
+        background: #f3f3f3;
+        color: #1a1c1c;
+        text-decoration: none;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 120px;
     }
 
-    /* Form */
-    .hs-label {
-      display: block;
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      color: #1a1c1c;
-      margin-bottom: 6px;
+    .filter-actions {
+        display: flex;
+        gap: 12px;
     }
 
-    .hs-input {
-      width: 100%;
-      border: 1.5px solid #b0b0b0;
-      border-radius: 12px;
-      padding: 14px 16px;
-      font-family: inherit;
-      font-size: 16px;
-      color: #1a1c1c;
-      background: #fff;
-      outline: none;
-      transition: border-color 0.15s, box-shadow 0.15s;
+    .hotel-card-link {
+        text-decoration: none;
+        color: inherit;
+        display: block;
     }
 
-    .hs-input:focus {
-      border-color: #1a1c1c;
-      border-width: 2px;
-      box-shadow: 0 0 0 3px rgba(186, 0, 54, 0.08);
+    .hotel-card {
+        cursor: pointer;
     }
+</style>
+{% endblock %}
 
-    .hs-input::placeholder {
-      color: #b0b0b0;
-    }
+{% block content %}
+<div class="search-wrapper">
 
-    .hs-input.error {
-      border-color: #ba1a1a;
-      box-shadow: 0 0 0 3px rgba(186, 26, 26, 0.10);
-    }
+    <form method="GET" class="search-form">
 
-    .otp-box {
-      width: 52px;
-      height: 60px;
-      border: 1.5px solid #e2e2e2;
-      border-radius: 12px;
-      font-family: inherit;
-      font-size: 24px;
-      font-weight: 700;
-      text-align: center;
-      color: #1a1c1c;
-      background: #fff;
-      outline: none;
-      transition: border-color 0.15s, box-shadow 0.15s;
-    }
+        <input type="text" name="search" placeholder="Search hotels or location..." value="{{ search|default:'' }}">
 
-    .otp-box:focus {
-      border-color: #ba0036;
-      border-width: 2px;
-      box-shadow: 0 0 0 3px rgba(186, 0, 54, 0.12);
-    }
+        <input type="number" name="min_price" placeholder="Min Price" value="{{ min_price|default:'' }}">
 
-    /* Cards */
-    .hs-card {
-      background: #ffffff;
-      border: 1px solid #e2e2e2;
-      border-radius: 16px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-      transition: box-shadow 0.2s;
-    }
+        <input type="number" name="max_price" placeholder="Max Price" value="{{ max_price|default:'' }}">
 
-    .hs-card:hover {
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
-    }
+        <select name="amenity">
+            <option value="">All Amenities</option>
 
-    .stat-widget {
-      background: #fff;
-      border: 1px solid #e2e2e2;
-      border-radius: 16px;
-      padding: 24px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    }
+            {% for amenity in amenities %}
+            <option value="{{ amenity.id }}">
+                {{ amenity.name }}
+            </option>
+            {% endfor %}
+        </select>
 
-    .stat-icon-wrap {
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
-      background: rgba(186, 0, 54, 0.10);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #ba0036;
-    }
+        <div class="filter-actions">
+            <button type="submit" class="btn-primary">
+                Search
+            </button>
 
-    /* Sidebar nav item */
-    .nav-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 24px;
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      color: #5f5e5e;
-      text-decoration: none;
-      border-right: 3px solid transparent;
-      cursor: pointer;
-      transition: background 0.15s, color 0.15s, transform 0.15s;
-    }
+            <a href="{% url 'index' %}" class="btn-clear">
+                Clear
+            </a>
+        </div>
 
-    .nav-item:hover {
-      background: #e8e8e8;
-      color: #1a1c1c;
-      transform: translateX(2px);
-    }
+    </form>
 
-    .nav-item.active {
-      color: #ba0036;
-      background: rgba(186, 0, 54, 0.06);
-      border-right-color: #ba0036;
-    }
+</div>
 
-    /* Divider */
-    .or-divider {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      color: #b0b0b0;
-      font-size: 13px;
-      font-weight: 600;
-    }
+<div class="hotel-grid">
 
-    .or-divider::before,
-    .or-divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: #e2e2e2;
-    }
+    {% for hotel in hotels %}
 
-    /* Step bar */
-    .step-bar {
-      height: 4px;
-      border-radius: 99px;
-      flex: 1;
-      background: #e2e2e2;
-    }
+    <a href="{% url 'hotel_details' hotel.hotel_slug %}" class="hotel-card-link">
 
-    .step-bar.active,
-    .step-bar.done {
-      background: #ba0036;
-    }
+        <div class="hotel-card">
 
-    /* Scrollbar */
-    ::-webkit-scrollbar {
-      width: 6px;
-    }
+            {% with image=hotel.hotel_images.first %}
 
-    ::-webkit-scrollbar-track {
-      background: transparent;
-    }
+            <div class="hotel-image">
 
-    ::-webkit-scrollbar-thumb {
-      background: #e2e2e2;
-      border-radius: 99px;
-    }
+                {% if image %}
+                <img src="https://res.cloudinary.com/dmtmcjjrk/image/upload/{{ image.image }}" alt="{{ hotel.hotel_name }}">
+                {% else %}
+                <img src="{% static 'accounts/images/default-hotel.jpg' %}" alt="Hotel">
+                {% endif %}
 
-    /* Animations */
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(14px);
-      }
+            </div>
 
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
+            {% endwith %}
 
-    .anim {
-      animation: fadeInUp 0.4s ease both;
-    }
+            <div class="hotel-content">
 
-    .anim-d1 {
-      animation-delay: 0.05s;
-    }
+                <div class="hotel-name">
+                    {{ hotel.hotel_name }}
+                </div>
 
-    .anim-d2 {
-      animation-delay: 0.10s;
-    }
+                <div class="hotel-location">
+                    {{ hotel.hotel_location }}
+                </div>
 
-    .anim-d3 {
-      animation-delay: 0.16s;
-    }
+                <div class="hotel-price">
+                    ₹{{ hotel.hotel_offer_price }}
+                    <span>/ night</span>
+                </div>
 
-    .anim-d4 {
-      animation-delay: 0.22s;
-    }
+            </div>
 
-    .anim-d5 {
-      animation-delay: 0.28s;
-    }
+        </div>
 
-    /* Dark mode */
-    .dark body {
-      background-color: #1a1c1c;
-      color: #f1f1f1;
-    }
+    </a>
 
-    .dark .hs-card {
-      background: #2f3131;
-      border-color: #3a3c3c;
-    }
+    {% empty %}
 
-    .dark .hs-input {
-      background: #2f3131;
-      border-color: #5c5c5c;
-      color: #f1f1f1;
-    }
+    <h2>No hotels found</h2>
 
-    .dark .btn-social {
-      background: #2f3131;
-      border-color: #5c5c5c;
-      color: #f1f1f1;
-    }
-
-    .dark .stat-widget {
-      background: #2f3131;
-      border-color: #3a3c3c;
-    }
-
-    .messages-container {
-      margin-bottom: 20px;
-    }
-
-    .message {
-      padding: 14px 18px;
-      border-radius: 10px;
-      margin-bottom: 10px;
-      font-size: 14px;
-      font-weight: 500;
-    }
-
-    .message-success {
-      background: #d4edda;
-      color: #155724;
-      border: 1px solid #c3e6cb;
-    }
-
-    .message-error {
-      background: #f8d7da;
-      color: #721c24;
-      border: 1px solid #f5c6cb;
-    }
-
-    .message-warning {
-      background: #fff3cd;
-      color: #856404;
-      border: 1px solid #ffeeba;
-    }
-
-    .message-info {
-      background: #d1ecf1;
-      color: #0c5460;
-      border: 1px solid #bee5eb;
-    }
-    .messages-container{
-    position:fixed;
-    top:90px;
-    right:20px;
-    z-index:9999;
-}
-
-.message{
-    padding:14px 18px;
-    border-radius:12px;
-    margin-bottom:10px;
-    color:white;
-    font-weight:600;
-    min-width:280px;
-}
-
-.message-success{
-    background:#198754;
-}
-
-.message-warning{
-    background:#dc3545;
-}
-
-.message-error{
-    background:#dc3545;
-}
-.profile-dropdown{
-    position:relative;
-}
-
-.profile-btn{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    border:none;
-    cursor:pointer;
-    background:#ba0036;
-    color:white;
-    padding:10px 20px;
-    border-radius:999px;
-    font-size:13px;
-    font-weight:600;
-}
-
-.profile-menu{
-    position:absolute;
-    right:0;
-    top:120%;
-    min-width:200px;
-    background:white;
-    border:1px solid #ececec;
-    border-radius:14px;
-    box-shadow:0 10px 30px rgba(0,0,0,.08);
-    opacity:0;
-    visibility:hidden;
-    transition:.2s;
-    overflow:hidden;
-}
-
-.profile-menu a{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    padding:14px 16px;
-    text-decoration:none;
-    color:#1a1c1c;
-    font-size:14px;
-}
-
-.profile-menu a:hover{
-    background:#f6f6f6;
-}
-
-.profile-dropdown:hover .profile-menu{
-    opacity:1;
-    visibility:visible;
-}
-:root {
-    --nav-h: 64px;  /* whatever height your guest navbar actually is */
-}
-body {
-    /* existing styles... */
-    padding-top: var(--nav-h);  /* ADD THIS */
-}
-  </style>
-
-  {% block extra_head %}{% endblock %}
-</head>
-
-<body>
-  
-  {% if messages %}
-  <div class="messages-container">
-    {% for message in messages %}
-    <div class="message message-{{ message.tags }}">
-      {{ message }}
-    </div>
     {% endfor %}
-  </div>
-  {% endif %}
-  {% block nav %}{% endblock %}
 
-  {% block content %}{% endblock %}
+</div>
 
-  {% block scripts %}{% endblock %}
-<script>
-setTimeout(() => {
-    document.querySelectorAll('.message').forEach(msg => {
-        msg.style.opacity = '0';
-        setTimeout(() => msg.remove(), 300);
-    });
-}, 3000);
-</script>
-</body>
-
-</body>
-
-</html>
+{% endblock %}
