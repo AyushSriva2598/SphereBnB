@@ -36,7 +36,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'HotelManagement.urls'
+ROOT_URLCONF = 'SphereBnB.urls'
 
 TEMPLATES = [
     {
