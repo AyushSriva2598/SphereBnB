@@ -126,11 +126,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # PuoGtlPRmAWyStWfyzrQqBDHQbOlCHlH
 # railway
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
+ALLOWED_HOSTS=spherebnb.up.railway.app
 
 CSRF_TRUSTED_ORIGINS = [
-    f"https://{host}" for host in ALLOWED_HOSTS if host != '*'
-] + [
+    'https://spherebnb.up.railway.app',
+    'http://spherebnb.up.railway.app',
     'http://localhost:8000',
     'http://127.0.0.1:8000',
 ]
