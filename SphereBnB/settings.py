@@ -117,3 +117,15 @@ EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'tuaeswghfhhjnpbt')
 
 # ── Misc ──────────────────────────────────────────────────
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# postgres.railway.internal
+# 5432
+# postgres
+# PuoGtlPRmAWyStWfyzrQqBDHQbOlCHlH
+# railway
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://web-production-b549.up.railway.app',
+    'http://web-production-b549.up.railway.app',
+]
