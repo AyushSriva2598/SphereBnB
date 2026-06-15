@@ -126,7 +126,7 @@ def verify_otp(request, email):
         if otp == hotel_user.otp:
             messages.success(request, "Login Success")
             login(request,hotel_user)
-            return redirect('/accounts/login')
+            return redirect('/')
         
         messages.warning(request,"Wrong OTP")
         return redirect(f'/accounts/verify-otp/{email}/')
