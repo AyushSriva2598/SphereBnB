@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     'cloudinary_storage',    
     'home',
     'accounts',
+    'anymail',
 ]
 
 # ── Middleware ────────────────────────────────────────────
@@ -119,15 +120,12 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')          # ← was 'public/static' which is wrong
 
 # Remove anymail completely and replace with:
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.sendgrid.net'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_USE_SSL = False
-EMAIL_HOST_USER = 'apikey'  # ← literally the word 'apikey'
-EMAIL_HOST_PASSWORD = os.environ.get('SENDGRID_API_KEY')
+EMAIL_BACKEND = "anymail.backends.sendgrid.EmailBackend"
+
+ANYMAIL = {
+    "SENDGRID_API_KEY": os.environ.get("SENDGRID_API_KEY"),
+}
 DEFAULT_FROM_EMAIL = 'ayushsriva2598@gmail.com'
-EMAIL_TIMEOUT = 5 
 
 # ── Misc ──────────────────────────────────────────────────
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
