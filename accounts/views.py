@@ -252,7 +252,7 @@ def verify_otp_host(request, email):
         if otp == hotel_host.otp:
             messages.success(request, "Login Success")
             login(request,hotel_host)
-            return redirect('')
+            return redirect('/')
         
         messages.warning(request,"Wrong OTP")
         return redirect(f'/accounts/verify-otp-host/{email}/')
