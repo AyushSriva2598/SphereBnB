@@ -16,9 +16,9 @@ def sendEmailToken(email, token):
     send_mail(
         subject,
         message,
-        settings.EMAIL_HOST_USER,
+        settings.DEFAULT_FROM_EMAIL,
         [email],
-        fail_silently=False,
+        fail_silently=True,
     )
 
 def sendOTPtoEmail(email, otp):
@@ -29,9 +29,9 @@ def sendOTPtoEmail(email, otp):
     send_mail(
         subject,
         message,
-        settings.EMAIL_HOST_USER,
+        settings.DEFAULT_FROM_EMAIL,
         [email],
-        fail_silently=False,
+        fail_silently=True,
     )
 
 def sendEmailTokenHost(email, token):
@@ -42,9 +42,9 @@ def sendEmailTokenHost(email, token):
     send_mail(
         subject,
         message,
-        settings.EMAIL_HOST_USER,
+        settings.DEFAULT_FROM_EMAIL,
         [email],
-        fail_silently=False,
+        fail_silently=True,
     )
 
 def sendOTPtoEmailHost(email, otp):
@@ -55,9 +55,9 @@ def sendOTPtoEmailHost(email, otp):
     send_mail(
         subject,
         message,
-        settings.EMAIL_HOST_USER,
+        settings.DEFAULT_FROM_EMAIL,
         [email],
-        fail_silently=False,
+        fail_silently=True,
     )
 
 def generateSlug(hotel_name):
@@ -90,9 +90,9 @@ HostStay Team
     send_mail(
         subject,
         message,
-        settings.EMAIL_HOST_USER,
+        settings.DEFAULT_FROM_EMAIL,
         [email],
-        fail_silently=False,
+        fail_silently=True,
     )
     
 def hostBookingCancellationEmail(host_email, booking):
@@ -122,12 +122,12 @@ HostStay Team
 """
 
     send_mail(
-        subject,
-        message,
-        settings.EMAIL_HOST_USER,
-        [host_email],
-        fail_silently=False,
-    )
+    subject,
+    message,
+    settings.DEFAULT_FROM_EMAIL,
+    [host_email],
+    fail_silently=True,
+)
 
 def userbookingCancellationEmail(guest_email, booking):
 
@@ -155,9 +155,9 @@ HostStay Team
 """
 
     send_mail(
-        subject,
-        message,
-        settings.EMAIL_HOST_USER,
-        [guest_email],
-        fail_silently=False,
-    )
+    subject,
+    message,
+    settings.DEFAULT_FROM_EMAIL,
+    [guest_email],
+    fail_silently=True,
+)
