@@ -148,7 +148,11 @@ def create_reservation(request, slug):
             status="confirmed",          # ← auto-confirmed
         )
         email=booking.guest.email
-        bookingConfirmationEmail(email,booking)
+        try:
+            bookingConfirmationEmail(email, booking)
+        except Exception as e:
+            print(f"Email send failed: {e}")
+        # bookingConfirmationEmail(email,booking)
         messages.success(request, "You're all set! Your stay has been confirmed.")
         return redirect('/')
  
