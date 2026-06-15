@@ -1,6 +1,6 @@
 {% extends "utils/host/host_base.html" %}
 
-{% block title %}Log in or sign up — HostStay{% endblock %}
+{% block title %}Log in or sign up — SphereBnB{% endblock %}
 
 {% block nav %}
 {% include "utils/host/host_nav.html" with variant="public" %}{% endblock %}
@@ -381,7 +381,7 @@
         <div class="auth-card">
             {% include "utils/alerts.html" %}
             <h1 class="auth-title anim anim-d1">Log in or sign up</h1>
-            <p class="auth-sub anim anim-d2">Welcome to HostStay - host</p>
+            <p class="auth-sub anim anim-d2">Welcome to SphereBnB - host</p>
 
             <form method="POST"
       action="{% if otp_sent %}{% url 'verify_otp_host' email %}{% else %}{% url 'send_OTP_host' %}{% endif %}">
@@ -507,7 +507,7 @@
             </div>
             <div
                 style="margin-top:20px; padding-top:16px; border-top:1px solid #e2e2e2; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-                <span style="font-size:12px; color:#5f5e5e;">© 2024 HostStay Hospitality. All rights
+                <span style="font-size:12px; color:#5f5e5e;">© 2024 SphereBnB Hospitality. All rights
                     reserved.</span>
                 <div style="display:flex; gap:16px;">
                     <a href="#" class="footer-link" style="margin:0;">Privacy</a>
