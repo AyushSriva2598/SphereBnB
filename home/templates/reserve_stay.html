@@ -382,8 +382,8 @@
     const nightsTotal = document.getElementById('nightsTotal');
     const grandTotal = document.getElementById('grandTotal');
 
-    const pricePerNight = {{ hotel.hotel_offer_price|default: hotel.hotel_price }};
-    const hotelSlug = "{{ hotel.hotel_slug }}";
+const pricePerNight = parseFloat("{{ hotel.hotel_offer_price|default:hotel.hotel_price }}") || 0;
+const hotelSlug = "{{ hotel.hotel_slug }}";
 
     // Restrict past dates
     const today = new Date().toISOString().split('T')[0];
