@@ -284,8 +284,7 @@
         <div class="uploaded-grid">
             {% for image in images %}
             <div class="uploaded-item">
-                <img src="{{ image.image.url }}" alt="">
-
+                <img src="https://res.cloudinary.com/dmtmcjjrk/image/upload/{{ image.image }}" alt="">
                 <form method="post" action="{% url 'host_delete_stay_image' image.id %}">
                     {% csrf_token %}
                     <button type="submit" class="uploaded-delete-btn" title="Delete photo">&times;</button>

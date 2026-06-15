@@ -282,7 +282,7 @@
         {% with image=hotel.hotel_images.first %}
         <div class="summary-image">
             {% if image and image.image %}
-            <img src="{{ image.image.url }}" alt="{{ hotel.hotel_name }}">
+            <img src="https://res.cloudinary.com/dmtmcjjrk/image/upload/{{ image.image }}" alt="{{ hotel.hotel_name }}">
             {% else %}
             <img src="{% static 'accounts/images/default-hotel.jpg' %}" alt="Default Hotel">
             {% endif %}
@@ -372,18 +372,18 @@
 </div>
 
 <script>
-    const checkIn  = document.getElementById('check_in');
+    const checkIn = document.getElementById('check_in');
     const checkOut = document.getElementById('check_out');
     const checkBtn = document.getElementById('checkAvailabilityBtn');
-    const reserveBtn      = document.getElementById('reserveBtn');
+    const reserveBtn = document.getElementById('reserveBtn');
     const availabilityMsg = document.getElementById('availabilityMsg');
-    const priceBreakdown  = document.getElementById('priceBreakdown');
+    const priceBreakdown = document.getElementById('priceBreakdown');
     const nightsLabel = document.getElementById('nightsLabel');
     const nightsTotal = document.getElementById('nightsTotal');
-    const grandTotal  = document.getElementById('grandTotal');
+    const grandTotal = document.getElementById('grandTotal');
 
-    const pricePerNight = {{ hotel.hotel_offer_price|default:hotel.hotel_price }};
-    const hotelSlug     = "{{ hotel.hotel_slug }}";
+    const pricePerNight = {{ hotel.hotel_offer_price|default: hotel.hotel_price }};
+    const hotelSlug = "{{ hotel.hotel_slug }}";
 
     // Restrict past dates
     const today = new Date().toISOString().split('T')[0];
@@ -448,7 +448,7 @@
                     const total = nights * pricePerNight;
                     nightsLabel.textContent = `₹${pricePerNight.toLocaleString('en-IN')} × ${nights} night${nights > 1 ? 's' : ''}`;
                     nightsTotal.textContent = `₹${total.toLocaleString('en-IN')}`;
-                    grandTotal.textContent  = `₹${total.toLocaleString('en-IN')}`;
+                    grandTotal.textContent = `₹${total.toLocaleString('en-IN')}`;
                     priceBreakdown.classList.add('active');
                     reserveBtn.disabled = false;
                 } else {

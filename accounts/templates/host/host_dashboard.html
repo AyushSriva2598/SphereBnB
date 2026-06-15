@@ -368,7 +368,7 @@
                 {% with image=stay.hotel_images.first %}
                 <div class="stay-image">
                     {% if image %}
-                    <img src="{{ image.image.url }}" alt="{{ stay.hotel_name }}">
+                    <img src="https://res.cloudinary.com/dmtmcjjrk/image/upload/{{ image.image }}" alt="{{ stay.hotel_name }}">
                     {% else %}
                     <img src="{% static 'accounts/images/default-hotel.jpg' %}" alt="Default Hotel">
                     {% endif %}
