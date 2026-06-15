@@ -24,7 +24,6 @@ INSTALLED_APPS = [
     'cloudinary_storage',    
     'home',
     'accounts',
-    'anymail',
 ]
 
 # ── Middleware ────────────────────────────────────────────
@@ -57,7 +56,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'HotelManagement.wsgi.application'
+WSGI_APPLICATION = 'SphereBnB.wsgi.application'
 
 # ── Database ──────────────────────────────────────────────
 # Uses Railway's DATABASE_URL in production, falls back to local postgres in dev
@@ -119,25 +118,21 @@ CLOUDINARY_STORAGE = {
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')          # ← was 'public/static' which is wrong
 
-# ── Email ─────────────────────────────────────────────────
-EMAIL_BACKEND = "anymail.backends.resend.EmailBackend"
-
-ANYMAIL = {
-    "RESEND_API_KEY": os.environ.get("RESEND_API_KEY"),
-}
-
+# Remove anymail completely and replace with:
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_HOST_USER = 'apikey'  # ← literally the word 'apikey'
+EMAIL_HOST_PASSWORD = os.environ.get('SENDGRID_API_KEY')
+DEFAULT_FROM_EMAIL = 'ayushsriva2598@gmail.com'
+EMAIL_TIMEOUT = 5 
 
 # ── Misc ──────────────────────────────────────────────────
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "onboarding@resend.dev")
 
 
-# postgres.railway.internal
-# 5432
-# postgres
-# PuoGtlPRmAWyStWfyzrQqBDHQbOlCHlH
-# railway
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
 
 CSRF_TRUSTED_ORIGINS = [
     'https://spherebnb.up.railway.app',
